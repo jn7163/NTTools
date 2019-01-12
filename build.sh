@@ -4,6 +4,6 @@ done
 
 find -name "*.java" > sources.txt
 
-javac -nowarn -d classes -classpath $CLASSPATH @sources.txt
+javac -nowarn -classpath $CLASSPATH @sources.txt
 
 rm -rf ./sources.txt
