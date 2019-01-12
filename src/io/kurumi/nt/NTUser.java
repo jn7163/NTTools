@@ -45,10 +45,10 @@ public class NTUser {
             JSONObject twiAccountMap = config.getJSONObject("twiAccounts");
             apiTokens.clear();
             twiAccounts.clear();
-            for (JSONObject tokenObj : (List<JSONObject>)apiTokenList) {
+            for (JSONObject tokenObj : ((List<JSONObject>)(Object)apiTokenList)) {
                 apiTokens.add(new ApiToken(tokenObj));
             }
-            for (Map.Entry<String,JSONObject> userObj : ((Map<String,JSONObject>)twiAccountMap).entrySet()) {
+            for (Map.Entry<String,JSONObject> userObj : ((Map<String,JSONObject>)(Object)twiAccountMap).entrySet()) {
                 TwiAccount acc = new TwiAccount(this, userObj.getValue());
                 twiAccounts.put(acc.accountId,acc);
             }

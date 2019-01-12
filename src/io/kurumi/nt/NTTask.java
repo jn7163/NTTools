@@ -77,7 +77,7 @@ public abstract class NTTask implements TaskOut {
 
     }
 
-    public static enum Type {
+    static enum Type {
 
         Repeat("repeat","复读任务","如果时间线上有复读的推文,那么程序就会自动跟随复读..."),
         ScanBlockedMe("scanbm","搜索B我的人","搜索所有我Fo的人的Fo");
