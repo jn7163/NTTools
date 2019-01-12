@@ -9,7 +9,7 @@ public abstract class NTTask implements TaskOut {
     public NTContext context;
     public String taskName;
 
-    public abstract Type getTaskType()
+    public abstract Type getTaskType();
     public abstract void exec() throws Exception;
 
     private TaskOut taskOut = new TaskOut() {
