@@ -28,5 +28,5 @@ chmod 777 *.sh
 
 因为不会powershell win的脚本暂不可用
 
-yum install java // java 安装
+yum install java // java 安装  
 yum install java-devel // jdk安装
