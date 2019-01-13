@@ -11,7 +11,7 @@ public class BlockScanner extends NTTask {
 
     @Override
     public NTTask.Type getTaskType() {
-        return NTTask.Type.ScanBlockedMe;
+        return null;
     }
 
     private TwiAccount acc;

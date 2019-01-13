@@ -10,6 +10,7 @@ import twitter4j.*;
 import twitter4j.auth.*;
 
 import twitter4j.Status;
+import io.kurumi.nt.tasks.*;
 
 public class NTMain {
 
@@ -78,16 +79,13 @@ public class NTMain {
             println("0.返回主菜单");
 
             println("1.取得ID信息 (带关系)");
-            println("2.取得流信息");
-            println("3." + NTTask.Type.ScanBlockedMe.name() + " (" + NTTask.Type.ScanBlockedMe.desc + ")");
-
+            println("2." + NTTask.Type.RepeatAndLike.name + "(" + NTTask.Type.RepeatAndLike.desc + ")");
             switch (choose()) {
 
                 case 0:mainMenu();return;
                 case 1:getBL();return;
-                case 2:getFM();return;
-                case 3:scan();return;
-
+                case 2:repeatAndLike();return;
+                
                 default : {
                         noSuchChoose();
                         main();
@@ -99,8 +97,10 @@ public class NTMain {
 
         }
 
-        static void getFM() {
+        static void repeatAndLike() {
 
+            printSplitLine();
+            
             TwiAccount acc = AccountManage.chooseAccount();
 
             if (acc == null) {
@@ -110,56 +110,38 @@ public class NTMain {
                 return;
 
             }
-
-            final Twitter api = acc.createApi();
-
-            try {
-
-                new TwitterStreamFactory(acc.createConfig()).getInstance().addListener(new StatusListener() {
-
-                        @Override
-                        public void onDeletionNotice(StatusDeletionNotice p1) {
-                            // TODO: Implement this method
-                        }
-
-                        @Override
-                        public void onTrackLimitationNotice(int p1) {
-                            // TODO: Implement this method
-                        }
-
-                        @Override
-                        public void onScrubGeo(long p1, long p2) {
-                            // TODO: Implement this method
-                        }
-
-                        @Override
-                        public void onStallWarning(StallWarning p1) {
-                            // TODO: Implement this method
-                        }
-                        
-
-                        @Override
-                        public void onStatus(Status status) {
-
-                            printSplitLine();
-                            println(status.getUser().getName() + " : " + status.getText());
-                            try {
-                                api.createFavorite(status.getId());
-                            } catch (TwitterException e) {}
-
-                        }
-
-                        @Override
-                        public void onException(Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        
-                    }).filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));
+            
+            printSplitLine();
+            
+            println("请选择模式 :");
+            println();
+            println("0.返回工具菜单");
+            println("1.仅打心");
+            println("2.仅复读");
+            println("3.打心和复读");
+            println();
+            println("注意 打心失败会停止打心");
+            
+            RALTask task = new RALTask(acc);
+            
+            switch(choose()) {
+                
+                case 0:main();return;
+                case 1:task.repeatEnable.set(false);break;
+                case 2:task.likeEnable.set(false);break;
+                case 3:break;
+                
+                default: {
                     
-            } catch (TwitterException e) {}
-
-
-
+                    noSuchChoose();
+                    main();
+                    return;
+                    
+                }
+                
+            }
+            
+            task.exec();
 
         }
 
