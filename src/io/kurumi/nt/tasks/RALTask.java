@@ -118,6 +118,8 @@ public class RALTask extends NTTask implements StatusListener {
     @Override
     public void exec() {
 
+        printSplitLine();
+        
         try {
 
             stream.filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));

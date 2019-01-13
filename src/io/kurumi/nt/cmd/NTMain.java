@@ -98,8 +98,6 @@ public class NTMain {
         }
 
         static void repeatAndLike() {
-
-            printSplitLine();
             
             TwiAccount acc = AccountManage.chooseAccount();
 
