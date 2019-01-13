@@ -69,16 +69,6 @@ public class NTMain {
                     return;
                 }
             case 4 : Tools.main();return;
-            case 5 : {
-
-                    try {
-                        NTApi.reply(AccountManage.chooseAccount().createApi(),
-                        .updateStatus(new StatusUpdate("那么你的ID？").inReplyToStatusId(Long.parseLong("1084049157587820545")));
-                    } catch (NumberFormatException e) {} catch (TwitterException e) {}
-
-                    return;
-                }
-
             default : {
 
                     noSuchChoose();
