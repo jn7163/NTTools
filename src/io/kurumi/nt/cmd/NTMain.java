@@ -14,12 +14,25 @@ import io.kurumi.nt.tasks.*;
 
 public class NTMain {
 
-    static File dataDir = new File(".");
+    static File dataDir;
 
     static NTContext context;
     static NTUser user;
 
     public static void main(String[] args) {
+
+
+        try {
+
+            Class.forName("android.app.Activity");
+
+            dataDir = new File("/sdcard/AppProjects/NTTools");
+
+        } catch (ClassNotFoundException e) {
+
+            dataDir = new File(".");
+
+        }
 
         printSplitLine();
 
@@ -56,6 +69,15 @@ public class NTMain {
                     return;
                 }
             case 4 : Tools.main();return;
+            case 5 : {
+
+                    try {
+                        NTApi.reply(AccountManage.chooseAccount().createApi(),
+                        .updateStatus(new StatusUpdate("那么你的ID？").inReplyToStatusId(Long.parseLong("1084049157587820545")));
+                    } catch (NumberFormatException e) {} catch (TwitterException e) {}
+
+                    return;
+                }
 
             default : {
 
@@ -85,7 +107,7 @@ public class NTMain {
                 case 0:mainMenu();return;
                 case 1:getBL();return;
                 case 2:repeatAndLike();return;
-                
+
                 default : {
                         noSuchChoose();
                         main();
@@ -98,7 +120,7 @@ public class NTMain {
         }
 
         static void repeatAndLike() {
-            
+
             TwiAccount acc = AccountManage.chooseAccount();
 
             if (acc == null) {
@@ -108,9 +130,9 @@ public class NTMain {
                 return;
 
             }
-            
+
             printSplitLine();
-            
+
             println("请选择模式 :");
             println();
             println("0.返回工具菜单");
@@ -119,26 +141,26 @@ public class NTMain {
             println("3.打心和复读");
             println();
             println("注意 打心失败会停止打心");
-            
+
             RALTask task = new RALTask(acc);
-            
-            switch(choose()) {
-                
+
+            switch (choose()) {
+
                 case 0:main();return;
                 case 1:task.repeatEnable.set(false);break;
                 case 2:task.likeEnable.set(false);break;
                 case 3:break;
-                
+
                 default: {
-                    
-                    noSuchChoose();
-                    main();
-                    return;
-                    
-                }
-                
+
+                        noSuchChoose();
+                        main();
+                        return;
+
+                    }
+
             }
-            
+
             task.exec();
 
         }

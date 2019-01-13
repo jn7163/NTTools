@@ -78,8 +78,8 @@ public class RALTask extends NTTask implements StatusListener {
 
         try {
 
-            api.updateStatus(new StatusUpdate(status.getText()).inReplyToStatusId(status.getId()));
-
+            NTApi.reply(api,status,status.getText());
+            
             println("已复读 : " + status.getText());
 
         } catch (TwitterException e) {
