@@ -40,12 +40,19 @@ public class RALTask extends NTTask implements StatusListener {
 
         } catch (TwitterException exc) {
 
-            printSplitLine();
-            println("Error :");
-            exc.printStackTrace();
-            printSplitLine();
 
-            likeEnable.set(false);
+
+            if (exc.getErrorCode() != 139) {
+
+                printSplitLine();
+                exc.printStackTrace();
+                printSplitLine();
+
+                likeEnable.set(false);
+
+                println("已停止打心");
+
+            }
 
         }
 
@@ -74,7 +81,7 @@ public class RALTask extends NTTask implements StatusListener {
             api.updateStatus(new StatusUpdate(status.getText()).inReplyToStatusId(status.getId()));
 
             println("已复读 : " + status.getText());
-            
+
         } catch (TwitterException e) {
 
             printSplitLine();
@@ -119,7 +126,7 @@ public class RALTask extends NTTask implements StatusListener {
     public void exec() {
 
         printSplitLine();
-        
+
         try {
 
             stream.filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));
