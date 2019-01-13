@@ -13,6 +13,8 @@ public class RALTask extends NTTask implements StatusListener {
     private TwitterStream stream;
 
     public AtomicBoolean likeEnable = new AtomicBoolean(true);
+    public AtomicBoolean likeAllContextEnable = new AtomicBoolean(false);
+    
     public AtomicBoolean repeatEnable = new AtomicBoolean(true);
 
     public RALTask(TwiAccount account) {
@@ -28,19 +30,30 @@ public class RALTask extends NTTask implements StatusListener {
 
         if (status.getUser().getId() == acc.accountId) return;
 
-        println(status.getUser().getName() + " : " + status.getText());
+        println("「" + status.getUser().getName() + "」 (" + status.getUser().getScreenName() + ")\n" + status.getText());
 
         try {
 
             if (likeEnable.get()) {
 
                 api.createFavorite(status.getId());
+                
+                if(likeAllContextEnable.get()) {
+                    
+                    Status superStatus = status.getQuotedStatus();
+
+                    while(superStatus != null) {
+                        
+                        api.createFavorite(superStatus.getId());
+                        superStatus = superStatus.getQuotedStatus();
+                        
+                    }
+                    
+                }
 
             }
 
         } catch (TwitterException exc) {
-
-
 
             if (exc.getErrorCode() != 139) {
 
@@ -73,13 +86,13 @@ public class RALTask extends NTTask implements StatusListener {
         while (superStatus != null) {
 
             if (superStatus.getUser().getId() == acc.accountId) return;
-
+            superStatus = superStatus.getQuotedStatus();
         }
 
         try {
 
-            NTApi.reply(api,status,status.getText());
-            
+            NTApi.reply(api, status, status.getText());
+
             println("已复读 : " + status.getText());
 
         } catch (TwitterException e) {

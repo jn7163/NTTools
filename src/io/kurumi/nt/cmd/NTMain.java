@@ -126,9 +126,11 @@ public class NTMain {
             println("请选择模式 :");
             println();
             println("0.返回工具菜单");
-            println("1.仅打心");
+            println("1.仅打心 (不对上文)");
+            println("2.仅打心 (对上文打心)");
             println("2.仅复读");
-            println("3.打心和复读");
+            println("3.打心和复读 (不对上文)");
+            println("4.打心和复读 (对上文打心)");
             println();
             println("注意 打心失败会停止打心");
 
@@ -138,8 +140,10 @@ public class NTMain {
 
                 case 0:main();return;
                 case 1:task.repeatEnable.set(false);break;
-                case 2:task.likeEnable.set(false);break;
-                case 3:break;
+                case 2:task.repeatEnable.set(false);task.likeAllContextEnable.set(true);break;
+                case 3:task.likeEnable.set(false);break;
+                case 4:break;
+                case 5:task.likeAllContextEnable.set(true);break;
 
                 default: {
 
