@@ -6,13 +6,23 @@
 
 jdk >= 7
 
-### 编译
+### 下载并编译
 
-./build.sh or ./build.cmd
+git clone https://github.com/HiedaNaKan/NTTools
+
+cd ./NTTools
+
+chmod 777 *.sh
+
+./build.sh
 
 ### 运行
 
-./start.sh or ./start.cmd
+./start.sh
+
+### 更新并重新编译
+
+./update.sh
 
 ### 注意
 
