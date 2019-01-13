@@ -1,7 +1,6 @@
 package io.kurumi.nt;
 
 import twitter4j.*;
-import org.apache.http.*;
 
 public class NTApi {
     
