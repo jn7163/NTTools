@@ -8,6 +8,6 @@ rm -rf ./classes
 
 mkdir ./classes
 
-javac -d $(dirname $(readlink -f $0))/classes -nowarn -classpath $CLASSPATH @sources.txt
+javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt -nowarn
 
 rm -rf ./sources.txt
