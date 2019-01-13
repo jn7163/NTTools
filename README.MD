@@ -1,4 +1,4 @@
-<# NTTools
+# NTTools
 
 一个Twitter盒子
 
