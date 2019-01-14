@@ -8,8 +8,8 @@ import cn.hutool.json.JSONObject;
 
 public class ApiToken {
 
-    public static final ApiToken defaultToken = new ApiToken("Default", "ygCoKRB56hIl9c57xVDFlr3AB", "tx6BkPwYIW9TV0zQa2HKxWsF5fgyyawhOcoiXRCWmSaohGJuYz");
-    public static final ApiToken twidereToken = new ApiToken("Twidere", "0WEJk1x6AlgtjGRhyABXw", "gWXNqEFhO3fMkAqoIKpTdjK0MOJs68xnOky0FRdDTP8");
+    public static final ApiToken defaultToken = new ApiToken("Twitter for 奈间", "ygCoKRB56hIl9c57xVDFlr3AB", "tx6BkPwYIW9TV0zQa2HKxWsF5fgyyawhOcoiXRCWmSaohGJuYz");
+    public static final ApiToken twidereToken = new ApiToken("Twitter for Android", "0WEJk1x6AlgtjGRhyABXw", "gWXNqEFhO3fMkAqoIKpTdjK0MOJs68xnOky0FRdDTP8");
 
     public String apiName;
     public String apiToken;

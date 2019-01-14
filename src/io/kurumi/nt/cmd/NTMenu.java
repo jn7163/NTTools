@@ -3,26 +3,20 @@ package io.kurumi.nt.cmd;
 import io.kurumi.nt.*;
 import java.util.*;
 
-public class NTMenu {
+public class NTMenu extends NTBaseCmd {
 
-    private NTBaseCmd cmd;
-    private NTMenu superMenu;
+    private boolean isTop = false;
 
     private LinkedList<Item> items = new LinkedList<>();
 
     public Runnable init;
     public Runnable msg;
 
-    public NTMenu(NTBaseCmd cmd) {
+    public NTMenu() {}
+    
+    public NTMenu(boolean isTop) {
 
-        this(cmd, null);
-
-    }
-
-    public NTMenu(NTBaseCmd cmd, NTMenu superMenu) {
-
-        this.cmd = cmd;
-        this.superMenu = superMenu;
+        this.isTop = isTop;
 
     }
 
@@ -33,7 +27,7 @@ public class NTMenu {
             @Override
             public void run() {
 
-                cmd.println(msg);
+                println(msg);
 
             }
 
@@ -48,8 +42,8 @@ public class NTMenu {
             @Override
             public void run() {
 
-                cmd.println(msg);
-                cmd.printSplitLine();
+                println(msg);
+                printSplitLine();
 
                 NTMenu.this.msg = null;
 
@@ -77,7 +71,7 @@ public class NTMenu {
 
     public NTMenu subMenu(String name) {
 
-        NTMenu sub = new NTMenu(cmd, this);
+        NTMenu sub = new NTMenu(false);
 
         item(new SubMenuItem(name, sub));
 
@@ -87,7 +81,7 @@ public class NTMenu {
     
     public void start() {
         
-        cmd.printSplitLine();
+        printSplitLine();
         
         print();
         
@@ -95,7 +89,7 @@ public class NTMenu {
 
     public void print() {
 
-        cmd.clear();
+        clear();
 
         if (msg != null) {
 
@@ -103,13 +97,13 @@ public class NTMenu {
 
         }
 
-        if (superMenu == null) {   
+        if (isTop) {   
 
-            cmd.println("[0] : 退出程序");
+            println("[0] : 退出程序");
 
         } else {
 
-            cmd.println("[0] : 返回上级");
+            println("[0] : 退出选择");
 
         }
 
@@ -125,13 +119,13 @@ public class NTMenu {
 
             index ++;
 
-            cmd.println("[" + index + "] : " + i.name);
+            println("[" + index + "] : " + i.name);
 
         }
 
-        cmd.println();
+        println();
 
-        int choose = cmd.choose();
+        int choose = choose();
 
         if (choose < 0 || choose > index) {
 
@@ -140,8 +134,8 @@ public class NTMenu {
                 @Override
                 public void run() {
 
-                    cmd.noSuchChoose();
-                    cmd.printSplitLine();
+                    noSuchChoose();
+                    printSplitLine();
                     msg = null;
 
                 }
@@ -154,7 +148,7 @@ public class NTMenu {
 
         } else if (choose == 0) {
 
-            if (superMenu == null) {
+            if (isTop) {
 
                 System.exit(0);
 
@@ -168,15 +162,15 @@ public class NTMenu {
 
             Item ci = items.get(choose - 1);
 
-            cmd.clear();
+            clear();
 
             try {
 
-                cmd.printSplitLine();
+                printSplitLine();
 
                 if (!ci.run()) {
 
-                    cmd.printSplitLine();
+                    printSplitLine();
                     
                     print();
 
@@ -184,17 +178,17 @@ public class NTMenu {
 
             } catch (Exception ex) {
 
-                cmd.clear();
+                clear();
 
-                cmd.printSplitLine();
+                printSplitLine();
 
                 ex.printStackTrace();
 
-                cmd.printSplitLine();
+                printSplitLine();
 
-                cmd.println("出现错误 要退出吗？");
+                println("出现错误 要退出吗？");
 
-                if (cmd.confirm()) {
+                if (confirm()) {
 
                     System.exit(1);
 

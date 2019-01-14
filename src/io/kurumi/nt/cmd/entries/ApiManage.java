@@ -5,6 +5,22 @@ import io.kurumi.nt.cmd.*;
 
 public class ApiManage extends NTBaseCmd {
     
+    public static ApiToken chooseApi(final NTUser user) {
+
+        NTCM<ApiToken> cm = new NTCM<ApiToken>("Api")
+        .add(ApiToken.defaultToken.apiName,ApiToken.defaultToken)
+        .add(ApiToken.twidereToken.apiName,ApiToken.twidereToken);
+        
+        for (ApiToken token : user.apiTokens) {
+            
+            cm.add(token.apiName,token);
+            
+        }
+        
+        return cm.chooseItem();
+        
+        
+    }
   
     public static void apply(final NTUser user, NTMenu menu) {
 

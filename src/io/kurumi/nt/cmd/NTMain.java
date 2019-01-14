@@ -7,25 +7,12 @@ import io.kurumi.nt.cmd.entries.*;
 public class NTMain extends NTBaseCmd {
 
     public static void main(String[] args) {
-
-        new NTMain().run();
-
-    }
-
-    private File dataDir;
-
-    private NTContext context;
-    private NTUser user;
-
-    private NTMenu menu;
-
-    public void run() {
-
+     
+        File dataDir = new File("/sdcard/AppProjects/NTTools");
+        
         try {
 
             Class.forName("android.os.Build");
-
-            dataDir = new File("/sdcard/AppProjects/NTTools");
 
         } catch (ClassNotFoundException e) {
 
@@ -33,15 +20,15 @@ public class NTMain extends NTBaseCmd {
 
         }
 
-        context = new NTContext(dataDir);
-        user = context.getDefaultUser();
+        NTContext context = new NTContext(dataDir);
+        NTUser user = context.getDefaultUser();
 
         printSplitLine();
         println("正在启动NT盒子... (单用户模式)");
 
-        menu = new NTMenu(this);
+        NTMenu menu = new NTMenu(true);
 
-        ApiManage.apply(user,menu);
+        ApiManage.apply(user, menu);
 
         menu.start();
 
