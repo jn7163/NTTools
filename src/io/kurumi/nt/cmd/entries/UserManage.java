@@ -33,4 +33,27 @@ public class UserManage extends NTBaseCmd {
         
     }
     
+    public static TwiAccount addUser(NTUser user) {
+        
+        ApiToken token = ApiManage.chooseApi(user);
+        
+        
+        return new NTCD<TwiAccount>("添加方式")
+        
+            .add("手动输入Token", new Func<TwiAccount>() {
+
+                @Override
+                public TwiAccount invoke() {
+                    
+                    
+                    
+                    
+                }
+            
+        }).invoke();
+        
+    }
+    
+    
+    
 }
