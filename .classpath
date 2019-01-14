@@ -6,6 +6,7 @@
 <classpathentry kind="lib" path="libs/hutool-core-4.4.0.jar"/>
 <classpathentry kind="lib" path="libs/hutool-http-4.4.0.jar"/>
 <classpathentry kind="lib" path="libs/hutool-log-4.4.0.jar"/>
+<classpathentry kind="lib" path="libs/hutool-system-4.4.0.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j-async-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j-core-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j-stream-4.0.7.jar"/>

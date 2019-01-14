@@ -39,5 +39,5 @@ chmod 777 *.sh
 
 在AIDE默认项目目录下 :  
 
--- 克隆Git仓库 https://github.com/HiedaNaKan/NTTools
+-- 克隆Git仓库 https://github.com/HiedaNaKan/NTTools  
 -- 进入项目 点击打开 点击右上角运行

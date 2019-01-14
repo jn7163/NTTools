@@ -1,18 +1,19 @@
 package io.kurumi.nt;
 
-import java.util.*;
 import cn.hutool.core.io.*;
-import java.io.*;
-import cn.hutool.core.util.*;
 import cn.hutool.json.*;
+import java.io.*;
+import java.util.*;
 
 public class NTUser {
 
-    private NTContext context;
+    public NTContext context;
+    
     public String userId;
 
     public LinkedList<ApiToken> apiTokens = new LinkedList<>();
     public LinkedHashMap<Long,TwiAccount> twiAccounts = new LinkedHashMap<>();
+    public JSONObject userData = new JSONObject();
 
     public NTUser(NTContext context, String userId) {
         this.context = context;
@@ -21,7 +22,7 @@ public class NTUser {
     }
 
     public File getConfigFile() {
-        return new File(context.getUserDir(), userId + ".json");
+        return new File(context.getUserDir(), userId + "/" + "config.json");
     }
 
     public ApiToken getToken(int index) {
@@ -43,6 +44,8 @@ public class NTUser {
             JSONObject config = new JSONObject(configJson);
             JSONArray apiTokenList = config.getJSONArray("apiTokens");
             JSONObject twiAccountMap = config.getJSONObject("twiAccounts");
+            userData = config.getJSONObject("userData");
+           
             apiTokens.clear();
             twiAccounts.clear();
             for (JSONObject tokenObj : ((List<JSONObject>)(Object)apiTokenList)) {
@@ -50,17 +53,18 @@ public class NTUser {
             }
             for (Map.Entry<String,JSONObject> userObj : ((Map<String,JSONObject>)(Object)twiAccountMap).entrySet()) {
                 TwiAccount acc = new TwiAccount(this, userObj.getValue());
-                twiAccounts.put(acc.accountId,acc);
+                twiAccounts.put(acc.accountId, acc);
             }
 
         } catch (IORuntimeException ex) {}
 
     }
-
+    
+    
     public void save() {
 
         JSONObject config = new JSONObject();
-        
+
         JSONArray apiTokenList = new JSONArray();
         JSONObject twiAccountMap = new JSONObject();
 
@@ -68,12 +72,13 @@ public class NTUser {
             apiTokenList.add(apiToken.toJSONObject());
         }
         for (Map.Entry<Long,TwiAccount> acc : twiAccounts.entrySet()) {
-            twiAccountMap.put(acc.getKey().toString(),acc.getValue().toJsonObject());
+            twiAccountMap.put(acc.getKey().toString(), acc.getValue().toJsonObject());
         }
 
         config.put("apiTokens", apiTokenList);
         config.put("twiAccounts", twiAccountMap);
-
+        config.put("userData",userData);
+        
         FileUtil.writeUtf8String(config.toStringPretty(), getConfigFile());
 
     }

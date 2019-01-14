@@ -1,12 +1,12 @@
 package io.kurumi.nt.tasks;
 
 import io.kurumi.nt.*;
-import io.kurumi.nt.NTTask.*;
+import io.kurumi.nt.NTBase.*;
 import twitter4j.*;
 import java.util.concurrent.atomic.*;
 import java.util.*;
 
-public class RALTask extends NTTask implements StatusListener {
+public class StreamTask extends NTBase implements StatusListener {
 
     private TwiAccount acc;
     private Twitter api;
@@ -14,21 +14,51 @@ public class RALTask extends NTTask implements StatusListener {
 
     public AtomicBoolean likeEnable = new AtomicBoolean(true);
     public AtomicBoolean likeAllContextEnable = new AtomicBoolean(false);
-    
     public AtomicBoolean repeatEnable = new AtomicBoolean(true);
 
-    public RALTask(TwiAccount account) {
+    public StreamTask(TwiAccount account) {
 
         acc = account;
 
         api = acc.createApi();
+        
         stream = new TwitterStreamFactory(acc.createConfig()).getInstance().addListener(this);
     }
+    
+    public void run() {
+
+        printSplitLine();
+
+        try {
+
+            stream.filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));
+
+        } catch (TwitterException e) {
+
+            if (e.isCausedByNetworkIssue()) {
+
+                println("网络错误...");
+
+            } else if (e.exceededRateLimitation()) {
+
+                RateLimitStatus rate = e.getRateLimitStatus();
+
+                println("到达API上限 请" + rate.getSecondsUntilReset() + "秒后再试 ~");
+
+            }
+
+
+        }
+
+    }
+    
 
     @Override
     public void onStatus(Status status) {
-
+        
         if (status.getUser().getId() == acc.accountId) return;
+        
+        if (status.isRetweeted()) return;
 
         println("「" + status.getUser().getName() + "」 (" + status.getUser().getScreenName() + ")\n" + status.getText());
 
@@ -129,39 +159,5 @@ public class RALTask extends NTTask implements StatusListener {
         printSplitLine();
 
     }
-
-    @Override
-    public NTTask.Type getTaskType() {
-        return NTTask.Type.RepeatAndLike;
-    }
-
-    @Override
-    public void exec() {
-
-        printSplitLine();
-
-        try {
-
-            stream.filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));
-
-        } catch (TwitterException e) {
-
-            if (e.isCausedByNetworkIssue()) {
-
-                println("网络错误...");
-
-            } else if (e.exceededRateLimitation()) {
-
-                RateLimitStatus rate = e.getRateLimitStatus();
-
-                println("到达API上限 请" + rate.getSecondsUntilReset() + "秒后再试 ~");
-
-            }
-
-
-        }
-
-    }
-
 
 }

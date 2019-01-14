@@ -18,6 +18,8 @@ public class TwiAccount {
     public Long accountId;
     public String screenName;
     public String name;
+ 
+    public JSONObject userData;
 
     public TwiAccount(NTUser user, JSONObject json) {
 
@@ -30,7 +32,8 @@ public class TwiAccount {
         accountId = json.getLong("accountId");
         screenName = json.getStr("screenName");
         name = json.getStr("name");
-
+        userData = json.getJSONObject("userData");
+        
     }
 
     public TwiAccount(NTUser user, String apiToken, String apiSecToken, String accToken, String accSecToken) {
@@ -39,6 +42,12 @@ public class TwiAccount {
         this.apiSecToken = apiSecToken;
         this.accToken = accToken;
         this.accSecToken = accSecToken;
+    }
+    
+    public String getFormatedName() {
+        
+        return "「" + name + "」" + " (@" + screenName + ")";
+        
     }
 
     public boolean refresh() {
@@ -50,7 +59,6 @@ public class TwiAccount {
             User thisAcc = api.showUser(accountId);
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
-            
             return true;
 
         } catch (TwitterException e) {}
@@ -85,8 +93,15 @@ public class TwiAccount {
             .put("accSecToken", accSecToken)
             .put("accountId", accountId)
             .put("screenName", screenName)
-            .put("name",name);
+            .put("name",name)
+            .put("userData",userData);
 
+    }
+    
+    public void save() {
+        
+        user.save();
+        
     }
 
 }
