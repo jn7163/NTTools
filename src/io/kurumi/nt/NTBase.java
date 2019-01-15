@@ -63,7 +63,11 @@ public abstract class NTBase {
 
             }
 
-        } catch (IOException e) {} catch (InterruptedException e) {}
+        } catch (Exception e) {
+            
+            e.printStackTrace();
+            
+        }
 
     }
 

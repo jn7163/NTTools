@@ -94,6 +94,8 @@ public class NTApi {
     public static LinkedList<Status> getContextStatus(Twitter api, Status status) throws TwitterException {
 
         Status top = status;
+        
+       
 
         while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
