@@ -60,9 +60,8 @@ public class NTUser {
 
     }
     
-    
-    public void save() {
-
+    public JSONObject getConfigObject() {
+        
         JSONObject config = new JSONObject();
 
         JSONArray apiTokenList = new JSONArray();
@@ -78,9 +77,16 @@ public class NTUser {
         config.put("apiTokens", apiTokenList);
         config.put("twiAccounts", twiAccountMap);
         config.put("userData",userData);
-        
-        FileUtil.writeUtf8String(config.toStringPretty(), getConfigFile());
 
+        return config;
+        
+    }
+    
+    
+    public void save() {
+
+        FileUtil.writeUtf8String(getConfigObject().toStringPretty(), getConfigFile());
+        
     }
 
 

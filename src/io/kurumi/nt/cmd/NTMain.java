@@ -36,6 +36,7 @@ public class NTMain extends NTBaseCmd {
                 ApiManage.apply(user, menu);
                 UserManage.apply(user, menu);
                 TaskManage.apply(user,menu);
+                BackUpManage.apply(user,menu);
                 
             }
 
