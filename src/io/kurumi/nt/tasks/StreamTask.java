@@ -156,7 +156,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 println("「流任务」到达Api上限 正在等待 : " + exc.getRateLimitStatus().getSecondsUntilReset() + " 秒");
 
                 try {
-                    Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset());
+                    Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset() * 1000);
                 } catch (InterruptedException e) {}
 
                 doMain(status);
@@ -167,8 +167,10 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
             if (exc.getErrorCode() != 139) {
 
-                println("「流人物」打心失败 : 已被限制");
+                println("「流任务」打心失败 : 已被限制");
 
+                return;
+                
             } else if (exc.isCausedByNetworkIssue()) {
                 
                 println("「流任务」网络错误....");

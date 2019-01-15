@@ -8,13 +8,13 @@ public abstract class NTBase {
 
     public static void print(String msg) {
 
-        System.out.print("  " + msg);
+        System.out.print(msg);
 
     }
 
     public static void println(String msg) {
 
-        System.out.println("  " + msg);
+        System.out.println(msg);
 
     }
 
@@ -26,7 +26,7 @@ public abstract class NTBase {
 
     public static void printSplitLine() {
 
-        System.out.println("------------------------");
+        println("------------------------");
 
     }
 
@@ -37,24 +37,35 @@ public abstract class NTBase {
         println("没有那样的选项");
 
     }
-    
+
     public static void clear() {
-        
+
         try {
-            
+
+            try {
+
+                Class.forName("com.aide.ui.AIDEApplication");
+
+                return;
+
+            } catch (ClassNotFoundException e) {
+
+            }
+
             if (SystemUtil.getOsInfo().isLinux()) {
 
-                Runtime.getRuntime().exec("clear").waitFor();
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
 
             } else {
 
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
 
             }
-            
+
         } catch (IOException e) {} catch (InterruptedException e) {}
 
     }
-   
-    
+
+
 }
