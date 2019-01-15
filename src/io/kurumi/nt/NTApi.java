@@ -6,23 +6,25 @@ import java.lang.reflect.*;
 
 public class NTApi {
 
+
+
     public static String formatUsernName(User u) {
-        
+
         return "[ " + u.getName() + "] (@" + u.getScreenName() + ")";
-        
+
     }
-    
-    public static long[] longMarge(long[] a,long[] b) {
-        
+
+    public static long[] longMarge(long[] a, long[] b) {
+
         long[] ret = new long[a.length + b.length];
-        
-        System.arraycopy(a,0,ret,0,a.length);
-        System.arraycopy(b,0,ret,a.length -1,b.length);
-        
-        
+
+        System.arraycopy(a, 0, ret, 0, a.length);
+        System.arraycopy(b, 0, ret, a.length - 1, b.length);
+
+
         return ret;
     }
-    
+
     public static long[] getAllFr(Twitter api) throws TwitterException {
 
         long[] all = new long[api.verifyCredentials().getFriendsCount()];
@@ -39,7 +41,7 @@ public class NTApi {
 
         }
 
-        while(ids.hasNext()) {
+        while (ids.hasNext()) {
 
             ids = api.getFriendsIDs(ids.getNextCursor());
 
@@ -56,25 +58,25 @@ public class NTApi {
         return all;
 
     }
-    
+
     public static long[] getAllFo(Twitter api) throws TwitterException {
-        
+
         long[] all = new long[api.verifyCredentials().getFollowersCount()];
-        
+
         int index = 0;
-        
+
         IDs ids = api.getFollowersIDs(-1);
-        
+
         for (long id : ids.getIDs()) {
-            
+
             all[index] = id;
-            
+
             index ++;
-            
+
         }
-        
-        while(ids.hasNext()) {
-            
+
+        while (ids.hasNext()) {
+
             ids = api.getFollowersIDs(ids.getNextCursor());
 
             for (long id : ids.getIDs()) {
@@ -84,14 +86,14 @@ public class NTApi {
                 index ++;
 
             }
-            
+
         }
-        
+
         return all;
-        
+
     }
-    
-    public static LinkedList<Status> getContextStatus(Twitter api, Status status) throws TwitterException {
+
+    public static LinkedList<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
 
@@ -99,29 +101,50 @@ public class NTApi {
 
             if (top.getInReplyToStatusId() != -1) {
 
-                top = api.showStatus(top.getInReplyToStatusId());
+                Status superStatus =  api.showStatus(top.getInReplyToStatusId());
+
+                if (target == null || Arrays.binarySearch(target, superStatus.getUser().getId()) != -1) {
+
+                    top = superStatus;
+
+                } else break;
 
             } else {
 
-                top = top.getQuotedStatus();
+                Status superStatus = top.getQuotedStatus();
+
+                if (target == null || Arrays.binarySearch(target, superStatus.getUser().getId()) != -1) {
+
+                    top = superStatus;
+
+                } else break;
 
             }
 
         }
+        
+        
 
-        return loopReplies(api, top);
+        LinkedList<Status> all =  loopReplies(api, top, target);
+        
+        all.add(top);
+        
+        return all;
+        
 
     }
 
-    public static LinkedList<Status> loopReplies(Twitter api, Status s) throws TwitterException {
-        
-        LinkedList<Status> list = new LinkedList<>();
+    public static LinkedList<Status> loopReplies(Twitter api, Status s, long[] target) throws TwitterException {
 
-        list.add(s);
+        LinkedList<Status> list = new LinkedList<>();
 
         for (Status ss : getReplies(api, s)) {
 
-            list.addAll(loopReplies(api, ss));
+            if (target == null || Arrays.binarySearch(target, (long)ss.getUser().getId()) != -1) {
+
+                list.addAll(loopReplies(api, ss, target));
+
+            }
 
         }
 

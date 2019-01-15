@@ -119,7 +119,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                 if(setting.isSnedLikeToAllContextEnable()) {
 
-                    LinkedList<Status> list = NTApi.getContextStatus(api, status);
+                    LinkedList<Status> list = NTApi.getContextStatus(api, status , target);
 
                     for (Status s : list) {
 
