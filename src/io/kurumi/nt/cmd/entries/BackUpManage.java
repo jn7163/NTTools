@@ -38,7 +38,7 @@ public class BackUpManage extends NTBaseCmd {
                         @Override
                         public boolean run() {
 
-                            String config = input("输入配置文本 : ");
+                            String config = input("配置文本");
 
                             try {
 

@@ -37,7 +37,9 @@ public abstract class NTBaseCmd extends NTBase {
 
     public static boolean confirm(String msg) {
 
-        return "y".equals(input(msg + " y/N : ").toLowerCase());
+        System.out.print(msg + " y/N");
+        
+        return "y".equals(input().toLowerCase());
 
     }
 

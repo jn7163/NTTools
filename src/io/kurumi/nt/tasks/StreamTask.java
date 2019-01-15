@@ -15,6 +15,8 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
     private TwitterStream stream;
     private StreamSetting setting;
     
+    private long[] target;
+    
     public StreamTask(TwiAccount account) {
 
         acc = account;
@@ -39,8 +41,6 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
         }
         
         try {
-            
-            long[] target;
             
             if (setting.isSendLikeToFriends() || setting.isSendLikeToFollowers()) {
                 
@@ -129,6 +129,8 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                         if (s.isFavorited()) continue;
 
+                        if (Arrays.binarySearch(target,status.getId()) == -1) continue;
+                        
                         api.createFavorite(s.getId());
 
                         sc ++;
@@ -151,7 +153,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                 exc.printStackTrace();
                 
-                println("「流任务」到达Api上限 正在等待 : ");
+                println("「流任务」到达Api上限 正在等待 : " + exc.getRateLimitStatus().getSecondsUntilReset() + " 秒");
 
                 try {
                     Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset());
