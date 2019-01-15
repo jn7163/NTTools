@@ -5,6 +5,7 @@ import twitter4j.*;
 import twitter4j.conf.*;
 
 import cn.hutool.json.JSONObject;
+import org.mariotaku.microblog.library.twitter.*;
 
 public class TwiAccount {
 
@@ -62,6 +63,8 @@ public class TwiAccount {
     public boolean refresh() {
 
         try {
+            
+            Twitter twitter = Twitter
             
             Twitter api = createApi();
             User thisAcc = api.verifyCredentials();

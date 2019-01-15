@@ -1,4 +1,12 @@
-for jar in ./libs/*.jar;do
+for jar in ./libs/hutool/*.jar;do
+ export CLASSPATH=$CLASSPATH:$jar
+done
+
+for jar in ./libs/twitter4j/*.jar;do
+ export CLASSPATH=$CLASSPATH:$jar
+done
+
+for jar in ./libs/twiapi/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
