@@ -5,17 +5,16 @@ import io.kurumi.nt.NTBase.*;
 import twitter4j.*;
 import java.util.concurrent.atomic.*;
 import java.util.*;
+import java.lang.reflect.*;
+import java.util.concurrent.*;
 
-public class StreamTask extends NTBase implements StatusListener {
+public class StreamTask extends NTBase implements StatusListener,Runnable {
 
     private TwiAccount acc;
     private Twitter api;
     private TwitterStream stream;
-
-    public AtomicBoolean likeEnable = new AtomicBoolean(true);
-    public AtomicBoolean likeAllContextEnable = new AtomicBoolean(false);
-    public AtomicBoolean repeatEnable = new AtomicBoolean(true);
-
+    private StreamSetting setting;
+    
     public StreamTask(TwiAccount account) {
 
         acc = account;
@@ -23,15 +22,42 @@ public class StreamTask extends NTBase implements StatusListener {
         api = acc.createApi();
         
         stream = new TwitterStreamFactory(acc.createConfig()).getInstance().addListener(this);
+        
+        setting = StreamSetting.get(acc);
+        
     }
     
     public void run() {
-
-        printSplitLine();
-
+        
+        if (!setting.isSendLikeEnable()
+            && (setting.isSendLikeToFriends() || setting.isSendLikeToFollowers())) {
+            
+            println(acc.getFormatedName() + ":" + "无启用的功能...");
+            
+            return;
+            
+        }
+        
         try {
-
-            stream.filter(new FilterQuery().follow(api.getFriendsIDs(-1).getIDs()));
+            
+            long[] target;
+            
+            if (setting.isSendLikeToFriends() || setting.isSendLikeToFollowers()) {
+                
+               target = NTApi.longMarge(NTApi.getAllFr(api),NTApi.getAllFo(api));
+                
+            } else if(setting.isSendLikeToFriends()) {
+                
+                target = NTApi.getAllFr(api);
+               
+                
+            } else {
+                
+                target = NTApi.getAllFo(api);
+                
+            }
+            
+            stream.filter(new FilterQuery().follow(target));
 
         } catch (TwitterException e) {
 
@@ -52,59 +78,103 @@ public class StreamTask extends NTBase implements StatusListener {
 
     }
     
+    Executor exec = Executors.newSingleThreadExecutor();
 
     @Override
-    public void onStatus(Status status) {
+    public void onStatus(final Status status) {
         
         if (status.getUser().getId() == acc.accountId) return;
         
-        if (status.isRetweeted()) return;
+        if (status.isRetweet()) return;
+        
+        exec.execute(new Runnable() {
 
-        println("「" + status.getUser().getName() + "」 (" + status.getUser().getScreenName() + ")\n" + status.getText());
+                @Override
+                public void run() {
+                    
+                    doMain(status);
+                    
+                }
+                
+            });
 
+       
+
+    }
+    
+    public void doMain(Status status) {
+        
         try {
 
-            if (likeEnable.get()) {
+            int sc = 0;
+
+            if (setting.isSendLikeEnable()) {
+
+                if (status.isFavorited()) return;
+
+                sc ++;
+
 
                 api.createFavorite(status.getId());
-                
-                if(likeAllContextEnable.get()) {
-                    
-                    Status superStatus = status.getQuotedStatus();
 
-                    while(superStatus != null) {
-                        
-                        api.createFavorite(superStatus.getId());
-                        superStatus = superStatus.getQuotedStatus();
-                        
+                if(setting.isSnedLikeToAllContextEnable()) {
+
+                    LinkedList<Status> list = NTApi.getContextStatus(api, status);
+
+                    for (Status s : list) {
+
+                        if (s.getUser().getId() == acc.accountId) continue;
+
+                        if (s.isRetweet()) continue;
+
+                        if (s.isFavorited()) continue;
+
+                        api.createFavorite(s.getId());
+
+                        sc ++;
+
                     }
-                    
+
                 }
 
             }
 
+            println();
+            println("「流任务 for " + acc.name + "」 收到信息 来自 " + status.getUser().getName() + " :");
+            println(status.getText());
+
+            println("打心 x " + sc);
+
         } catch (TwitterException exc) {
 
-            if (exc.getErrorCode() != 139) {
+            if (exc.exceededRateLimitation()) {
 
-                printSplitLine();
                 exc.printStackTrace();
-                printSplitLine();
+                
+                println("「流任务」到达Api上限 正在等待 : ");
 
-                likeEnable.set(false);
+                try {
+                    Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset());
+                } catch (InterruptedException e) {}
 
-                println("已停止打心");
+                doMain(status);
+                
+                return;
 
             }
 
+            if (exc.getErrorCode() != 139) {
+
+                println("「流人物」打心失败 : 已被限制");
+
+            } else if (exc.isCausedByNetworkIssue()) {
+                
+                println("「流任务」网络错误....");
+                
+            }
+
         }
-
-        if (repeatEnable.get()) {
-
-            repeatIfNeeded(status);
-
-        }
-
+        
     }
 
     public void repeatIfNeeded(Status status) {

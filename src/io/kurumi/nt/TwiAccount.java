@@ -17,7 +17,9 @@ public class TwiAccount {
 
     public Long accountId;
     public String screenName;
+    
     public String name;
+ //   public String email;
  
     public JSONObject userData;
 
@@ -34,6 +36,13 @@ public class TwiAccount {
         name = json.getStr("name");
         userData = json.getJSONObject("userData");
         
+        if (userData == null) {
+            
+            userData = new JSONObject();
+            
+        }
+        
+      //  email = json.getStr("email");
     }
 
     public TwiAccount(NTUser user, String apiToken, String apiSecToken, String accToken, String accSecToken) {
@@ -55,10 +64,11 @@ public class TwiAccount {
         try {
             
             Twitter api = createApi();
-            accountId = api.getId();
-            User thisAcc = api.showUser(accountId);
+            User thisAcc = api.verifyCredentials();
+            accountId = thisAcc.getId();
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
+         //   email = thisAcc.getEmail();
             return true;
 
         } catch (TwitterException e) {}
@@ -94,6 +104,7 @@ public class TwiAccount {
             .put("accountId", accountId)
             .put("screenName", screenName)
             .put("name",name)
+         //   .put("email",email)
             .put("userData",userData);
 
     }

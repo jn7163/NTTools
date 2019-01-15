@@ -11,8 +11,8 @@ public class StreamSetting {
     private String KEY_SEND_LIKE_ALL_CONTEXT = "sendLikeToAllContext";
     private String KEY_SEND_LIKE_TO_FRIENDS = "snedLikeToFriends";
     private String KEY_SEND_LIKE_TO_FOLLOWERS = "snedLikeToFollowers";
-    private String KEY_SEND_LIKE_TO_USERLIST = "sendLikeToUserList";
-    private String KEY_USERLIST_LIST = "userListList";
+    //private String KEY_SEND_LIKE_TO_USERLIST = "sendLikeToUserList";
+   // private String KEY_USERLIST_LIST = "userListList";
     
     private TwiAccount acc;
 
@@ -78,8 +78,10 @@ public class StreamSetting {
     public static StreamSetting get(TwiAccount acc) {
         
         if (tmp.containsKey(acc)) return tmp.get(acc);
-        return tmp.put(acc,new StreamSetting(acc));
-        
+        StreamSetting setting = new StreamSetting(acc);
+        tmp.put(acc, setting);
+        return setting;
+
     }
     
 }

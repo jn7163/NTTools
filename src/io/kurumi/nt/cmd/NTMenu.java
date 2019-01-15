@@ -11,6 +11,7 @@ public class NTMenu extends NTBaseCmd {
 
     public Runnable init;
     public Runnable msg;
+    public Runnable omsg;
 
     public NTMenu() {}
     
@@ -37,7 +38,7 @@ public class NTMenu extends NTBaseCmd {
 
     public void omsg(final String msg) {
 
-        this.msg = new Runnable() {
+        this.omsg = new Runnable() {
 
             @Override
             public void run() {
@@ -45,7 +46,7 @@ public class NTMenu extends NTBaseCmd {
                 println(msg);
                 printSplitLine();
 
-                NTMenu.this.msg = null;
+                NTMenu.this.omsg = null;
 
             }
 
@@ -74,7 +75,7 @@ public class NTMenu extends NTBaseCmd {
         NTMenu sub = new NTMenu(false);
 
         item(new SubMenuItem(name, sub));
-
+        
         return sub;
 
     }
@@ -88,8 +89,6 @@ public class NTMenu extends NTBaseCmd {
     }
 
     public void print() {
-
-        clear();
 
         if (msg != null) {
 
@@ -161,17 +160,13 @@ public class NTMenu extends NTBaseCmd {
         } else {
 
             Item ci = items.get(choose - 1);
-
-            clear();
-
+            
             try {
-
-                printSplitLine();
 
                 if (!ci.run()) {
 
+                    clear();
                     printSplitLine();
-                    
                     print();
 
                 }
@@ -233,6 +228,8 @@ public class NTMenu extends NTBaseCmd {
         @Override
         public boolean run() {
 
+            clear();
+            printSplitLine();
             subMenu.print();
 
             return false;

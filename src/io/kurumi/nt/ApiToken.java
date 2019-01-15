@@ -25,6 +25,16 @@ public class ApiToken {
         this.apiSecToken = apiSecToken;
     }
 
+    public Configuration createAppOnlyConfig() {
+
+        return new ConfigurationBuilder()
+            .setOAuthConsumerKey(apiToken)
+            .setOAuthConsumerSecret(apiSecToken)
+            .setApplicationOnlyAuthEnabled(true)
+            .build();
+
+    }
+    
     public Configuration createConfig() {
         
         return new ConfigurationBuilder()
@@ -34,11 +44,18 @@ public class ApiToken {
         
     }
     
+    public Twitter createAppOnlyApi() {
+
+        return new TwitterFactory(createAppOnlyConfig()).getInstance();
+
+    }
+    
     public Twitter createApi() {
         
         return new TwitterFactory(createConfig()).getInstance();
         
     }
+  
 
     public JSONObject toJSONObject() {
 

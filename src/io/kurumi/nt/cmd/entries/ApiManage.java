@@ -4,26 +4,8 @@ import io.kurumi.nt.*;
 import io.kurumi.nt.cmd.*;
 
 public class ApiManage extends NTBaseCmd {
-    
-    public static ApiToken chooseApi(final NTUser user) {
 
-        NTCM<ApiToken> cm = new NTCM<ApiToken>("Api")
-        .add(ApiToken.defaultToken.apiName,ApiToken.defaultToken)
-        .add(ApiToken.twidereToken.apiName,ApiToken.twidereToken);
-        
-        for (ApiToken token : user.apiTokens) {
-            
-            cm.add(token.apiName,token);
-            
-        }
-        
-        return cm.chooseItem();
-        
-        
-    }
-  
     public static void apply(final NTUser user, NTMenu menu) {
-
 
         final NTMenu apiManageMainMenu = menu.subMenu("Api管理");
 
@@ -37,16 +19,10 @@ public class ApiManage extends NTBaseCmd {
                         @Override
                         public boolean run() {
 
-                            String apiName = input("Api名称");
-                            String apiToken = input("ApiToken");
-                            String apiSecToken = input("ApiSecToken");
-
-                            if (confirm()) {
-
-                                user.apiTokens.add(new ApiToken(apiName, apiToken, apiSecToken));
-                                user.save();
+                            if (addApi(user) != null) {
+                                
                                 apiManageMainMenu.omsg("添加成功！");
-
+                                
                             }
 
                             return false;
@@ -59,7 +35,7 @@ public class ApiManage extends NTBaseCmd {
 
                     NTMenu apiManageMenu = apiManageMainMenu.subMenu("管理Api : " + apiToken.apiName);
 
-                    buildApiManageMenu(user,apiManageMenu, apiToken);
+                    buildApiManageMenu(user, apiManageMenu, apiToken);
 
                 }
 
@@ -71,7 +47,7 @@ public class ApiManage extends NTBaseCmd {
 
     }
 
-    public static void buildApiManageMenu(final NTUser user,final NTMenu menu, final ApiToken token) {
+    public static void buildApiManageMenu(final NTUser user, final NTMenu menu, final ApiToken token) {
 
         menu.msg = new Runnable() {
 
@@ -158,7 +134,57 @@ public class ApiManage extends NTBaseCmd {
 
     }
 
+    public static ApiToken chooseApi(final NTUser user) {
 
-    
-    
+        NTCD<ApiToken> cd = new NTCD<ApiToken>("Api")
+            .add(ApiToken.defaultToken.apiName, ApiToken.defaultToken)
+            .add(ApiToken.twidereToken.apiName, ApiToken.twidereToken);
+
+        for (ApiToken token : user.apiTokens) {
+
+            cd.add(token.apiName, token);
+
+        }
+
+        cd.add("添加新Api", new FN<ApiToken>() {
+
+                @Override
+                public ApiToken invoke() {
+                    ApiToken ntk = addApi(user);
+                    if (ntk == null) return chooseApi(user);
+                    else return ntk;
+                }
+
+            });
+
+        return cd.invoke();
+
+
+    }
+
+    public static ApiToken addApi(NTUser user) {
+
+        
+        clear();
+        printSplitLine();
+        println("添加Api : ");
+
+        String apiName = input("Api名称");
+        String apiToken = input("ApiToken");
+        String apiSecToken = input("ApiSecToken");
+
+        if (confirm()) {
+
+            ApiToken token = new ApiToken(apiName, apiToken, apiSecToken);
+            user.apiTokens.add(token);
+            user.save();
+            return token;
+
+        }
+
+        return null;
+
+    }
+
+
 }

@@ -3,14 +3,22 @@ package io.kurumi.nt;
 import java.util.*;
 
 public abstract class NTBaseCmd extends NTBase {
-    
+
     public static Scanner session = new Scanner(System.in);
-    
+
     public static int choose() {
 
         print("请选择 (输入数字) : ");
 
-        return session.nextInt();
+        try {
+
+            return session.nextInt();
+
+        } catch (Exception ex) {
+
+            return -1;
+
+        }
 
     }
 
@@ -23,7 +31,13 @@ public abstract class NTBaseCmd extends NTBase {
 
     public static boolean confirm() {
 
-        return !"n".equals(input("确定吗 ？ Y/n : ").toLowerCase());
+        return confirm("确定吗 ？");
+
+    }
+
+    public static boolean confirm(String msg) {
+
+        return "y".equals(input(msg + " y/N : ").toLowerCase());
 
     }
 
@@ -45,8 +59,17 @@ public abstract class NTBaseCmd extends NTBase {
     public static int inputInt(String msg) {
 
         System.out.print(msg);
-        return session.nextInt();
+
+        try {
+
+            return session.nextInt();
+
+        } catch (Exception exc) {
+
+            return -1;
+
+        }
 
     }
-    
+
 }

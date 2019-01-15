@@ -2,12 +2,92 @@ package io.kurumi.nt;
 
 import twitter4j.*;
 import java.util.*;
+import java.lang.reflect.*;
 
 public class NTApi {
 
     public static String formatUsernName(User u) {
         
         return "[ " + u.getName() + "] (@" + u.getScreenName() + ")";
+        
+    }
+    
+    public static long[] longMarge(long[] a,long[] b) {
+        
+        long[] ret = new long[a.length + b.length];
+        
+        System.arraycopy(a,0,ret,0,a.length);
+        System.arraycopy(b,0,ret,a.length -1,b.length);
+        
+        
+        return ret;
+    }
+    
+    public static long[] getAllFr(Twitter api) throws TwitterException {
+
+        long[] all = new long[api.verifyCredentials().getFriendsCount()];
+
+        int index = 0;
+
+        IDs ids = api.getFriendsIDs(-1);
+
+        for (long id : ids.getIDs()) {
+
+            all[index] = id;
+
+            index ++;
+
+        }
+
+        while(ids.hasNext()) {
+
+            ids = api.getFriendsIDs(ids.getNextCursor());
+
+            for (long id : ids.getIDs()) {
+
+                all[index] = id;
+
+                index ++;
+
+            }
+
+        }
+
+        return all;
+
+    }
+    
+    public static long[] getAllFo(Twitter api) throws TwitterException {
+        
+        long[] all = new long[api.verifyCredentials().getFollowersCount()];
+        
+        int index = 0;
+        
+        IDs ids = api.getFollowersIDs(-1);
+        
+        for (long id : ids.getIDs()) {
+            
+            all[index] = id;
+            
+            index ++;
+            
+        }
+        
+        while(ids.hasNext()) {
+            
+            ids = api.getFollowersIDs(ids.getNextCursor());
+
+            for (long id : ids.getIDs()) {
+
+                all[index] = id;
+
+                index ++;
+
+            }
+            
+        }
+        
+        return all;
         
     }
     

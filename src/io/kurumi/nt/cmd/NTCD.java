@@ -3,7 +3,7 @@ package io.kurumi.nt.cmd;
 import io.kurumi.nt.*;
 import java.util.*;
 
-public class NTCD<R> extends NTBaseCmd {
+public class NTCD<R> extends FN<R> {
 
     private String chn;
 
@@ -13,19 +13,33 @@ public class NTCD<R> extends NTBaseCmd {
 
     }
 
-    private LinkedHashMap<String,Func<R>> items = new LinkedHashMap<>();
+    private LinkedHashMap<String,FN<R>> items = new LinkedHashMap<>();
 
-    public NTCD<R> add(String name, Func<R> item) {
+    public NTCD<R> add(String name, FN<R> item) {
 
         items.put(name, item);
 
         return this;
 
     }
+    
+    public NTCD<R> add(String name, final R item) {
 
+        return add(name, new FN<R>() {
+                @Override
+                public R invoke() {
+                    return item;
+                }
+            });
+
+    }
+
+    @Override
     public R invoke() {
-
+        
         clear();
+        
+        printSplitLine();
 
         switch (items.size()) {
 
@@ -38,7 +52,9 @@ public class NTCD<R> extends NTBaseCmd {
 
         int index = 0;
 
-        for (Map.Entry<String,Func<R>> item :items.entrySet()) {
+        LinkedList<Map.Entry<String,FN<R>> > list = new LinkedList<Map.Entry<String,FN<R>>>(items.entrySet());
+
+        for (Map.Entry<String,FN<R>> item :list) {
 
             index ++;
 
@@ -55,7 +71,7 @@ public class NTCD<R> extends NTBaseCmd {
 
         }
 
-        return new LinkedList<Func<R>>(items.values()).get(index - 1).invoke();
+        return list.get(choose - 1).getValue().invoke();
 
     }
 
