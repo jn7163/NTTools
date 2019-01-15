@@ -14,7 +14,7 @@ public class ApiManage extends NTBaseCmd {
             @Override
             public void run() {
 
-                apiManageMainMenu.clear().item(new NTMenu.Item("新建Api") {
+                apiManageMainMenu.clean().item(new NTMenu.Item("新建Api") {
 
                         @Override
                         public boolean run() {

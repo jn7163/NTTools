@@ -17,7 +17,7 @@ public class UserManage extends NTBaseCmd {
             @Override
             public void run() {
 
-                userManageMainMenu.clear();
+                userManageMainMenu.clean();
                 
                 for (Map.Entry<Long,TwiAccount> acc : user.twiAccounts.entrySet()) {
 
@@ -76,7 +76,7 @@ public class UserManage extends NTBaseCmd {
             @Override
             public void run() {
 
-                menu.clear().item(new NTMenu.Item("刷新账号") {
+                menu.clean().item(new NTMenu.Item("刷新账号") {
 
                         @Override
                         public boolean run() {

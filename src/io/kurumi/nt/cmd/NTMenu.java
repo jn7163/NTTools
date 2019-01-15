@@ -54,7 +54,7 @@ public class NTMenu extends NTBaseCmd {
 
     }
 
-    public NTMenu clear() {
+    public NTMenu clean() {
 
         items.clear();
 
@@ -165,7 +165,7 @@ public class NTMenu extends NTBaseCmd {
 
                 if (!ci.run()) {
 
-                    clear();
+                    clean();
                     printSplitLine();
                     print();
 
@@ -173,7 +173,7 @@ public class NTMenu extends NTBaseCmd {
 
             } catch (Exception ex) {
 
-                clear();
+                clean();
 
                 printSplitLine();
 
@@ -228,7 +228,7 @@ public class NTMenu extends NTBaseCmd {
         @Override
         public boolean run() {
 
-            clear();
+            clean();
             printSplitLine();
             subMenu.print();
 
