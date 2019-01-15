@@ -209,7 +209,7 @@ public class NTMenu extends NTBaseCmd {
 
         }
 
-        public abstract boolean run()
+        public abstract boolean run();
 
     }
 
