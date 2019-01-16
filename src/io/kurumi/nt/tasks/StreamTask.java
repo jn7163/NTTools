@@ -127,11 +127,11 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 sc ++;
 
 
-                api.createFavorite(status.getId());
+
 
                 if (setting.isSnedLikeToAllContextEnable()) {
 
-                    LinkedList<Status> list = NTApi.getContextStatus(api, status , target);
+                    LinkedHashSet<Status> list = NTApi.getContextStatus(api, status , target);
 
                     for (Status s : list) {
 
@@ -143,11 +143,27 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                         if (Arrays.binarySearch(target, status.getId()) == -1) continue;
 
-                        api.createFavorite(s.getId());
+                        try {
+
+                            api.createFavorite(s.getId());
+
+                        } catch (TwitterException ex) {
+
+                            if (ex.getErrorCode() != 139) {
+
+                                ex.printStackTrace();
+
+                            }
+
+                        }
 
                         sc ++;
 
                     }
+
+                } else {
+
+                    api.createFavorite(status.getId());
 
                 }
 
@@ -161,9 +177,11 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
         } catch (TwitterException exc) {
 
-            if (exc.getErrorCode() == 139) {}
+            if (exc.getErrorCode() == 139) {
 
-            if (exc.exceededRateLimitation()) {
+                println("已经打心 请检查是否有其他运行的程序");
+
+            } else if (exc.exceededRateLimitation()) {
 
                 exc.printStackTrace();
 

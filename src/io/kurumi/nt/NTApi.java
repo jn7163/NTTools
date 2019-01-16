@@ -108,10 +108,14 @@ public class NTApi {
 
     }
 
-    public static LinkedList<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
+    public static LinkedHashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
 
+        LinkedHashSet<Status> all = new LinkedHashSet<>();
+        
+        all.add(status);
+        
         while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
             if (top.getInReplyToStatusId() != -1) {
@@ -121,6 +125,8 @@ public class NTApi {
                 if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                     top = superStatus;
+                    
+                    all.add(superStatus);
 
                 } else break;
 
@@ -131,6 +137,8 @@ public class NTApi {
                 if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                     top = superStatus;
+                    
+                    all.add(status);
 
                 } else break;
 
@@ -140,9 +148,7 @@ public class NTApi {
         
         
 
-        LinkedList<Status> all =  loopReplies(api, top, target);
-        
-        all.add(top);
+         all.addAll(loopReplies(api, top, target));
         
         return all;
         
@@ -154,6 +160,8 @@ public class NTApi {
         LinkedList<Status> list = new LinkedList<>();
 
         for (Status ss : getReplies(api, s)) {
+            
+            list.add(ss);
 
             if (target == null || ArrayUtil.contains(target,ss.getUser().getId())) {
 
