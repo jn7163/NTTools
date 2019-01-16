@@ -85,7 +85,9 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
     public void stop() {
 
         stopped.set(true);
-
+        
+        stream.shutdown();
+       
         exec.shutdownNow();
 
     }
@@ -127,9 +129,6 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 if (status.isFavorited()) return;
 
                 sc ++;
-
-
-
 
                 if (setting.isSnedLikeToAllContextEnable()) {
 
