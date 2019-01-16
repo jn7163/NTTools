@@ -18,25 +18,25 @@ public class NTApi {
     public static long[] longMarge(long[] a, long[] b) {
 
         LinkedHashSet<Long> set = new LinkedHashSet<>();
-        
+
         for (long sa : a) {
-            
+
             set.add(sa);
-            
+
         }
-        
+
         for (long sb : b) {
 
             set.add(sb);
 
         }
-        
- 
-     //   long[] ret = new long[set.size()];
-       
-   //     System.arraycopy(set.toArray(new Long[set.size()]),0,ret,0,set.size());
-        
-        
+
+
+        //   long[] ret = new long[set.size()];
+
+        //     System.arraycopy(set.toArray(new Long[set.size()]),0,ret,0,set.size());
+
+
         return ArrayUtil.unWrap(set.toArray(new Long[set.size()]));
     }
 
@@ -113,45 +113,60 @@ public class NTApi {
         Status top = status;
 
         LinkedHashSet<Status> all = new LinkedHashSet<>();
-        
+
         all.add(status);
-        
-        while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
-            if (top.getInReplyToStatusId() != -1) {
+        try {
 
-                Status superStatus =  api.showStatus(top.getInReplyToStatusId());
+            while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
-                if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
+                if (top.getInReplyToStatusId() != -1) {
 
-                    top = superStatus;
-                    
-                    all.add(superStatus);
 
-                } else break;
 
-            } else {
+                    Status superStatus =  api.showStatus(top.getInReplyToStatusId());
 
-                Status superStatus = top.getQuotedStatus();
 
-                if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
-                    top = superStatus;
-                    
-                    all.add(status);
+                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
 
-                } else break;
+                        top = superStatus;
+
+                        all.add(superStatus);
+
+                    } else break;
+
+
+                } else {
+
+                    Status superStatus = top.getQuotedStatus();
+
+                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+
+                        top = superStatus;
+
+                        all.add(status);
+
+                    } else break;
+
+                }
 
             }
 
-        }
-        
-        
+        } catch (TwitterException exc) {
 
-         all.addAll(loopReplies(api, top, target));
-        
+            // 有锁推推文
+
+        }
+
+
+
+
+
+        all.addAll(loopReplies(api, top, target));
+
         return all;
-        
+
 
     }
 
@@ -160,10 +175,10 @@ public class NTApi {
         LinkedList<Status> list = new LinkedList<>();
 
         for (Status ss : getReplies(api, s)) {
-            
+
             list.add(ss);
 
-            if (target == null || ArrayUtil.contains(target,ss.getUser().getId())) {
+            if (target == null || ArrayUtil.contains(target, ss.getUser().getId())) {
 
                 list.addAll(loopReplies(api, ss, target));
 
