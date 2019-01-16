@@ -30,13 +30,24 @@ public class TaskManage extends NTBaseCmd {
                     println("正在启动流任务...");
                     println("输入 stop 停止...");
                     
+                    LinkedList<StreamTask> tasks = new LinkedList<>();
+                    
                     for (Map.Entry<Long,TwiAccount> acc : user.twiAccounts.entrySet()) {
                         
-                        new Thread(new StreamTask(acc.getValue())).start();
+                        StreamTask task = new StreamTask(acc.getValue());
+                        tasks.add(task);
+                        new Thread(task).start();
                         
                     }
+                
                    
                     while(!"stop".equals(input())) {}
+                    
+                    for (StreamTask task :tasks) {
+                        
+                        task.stop();
+                        
+                    }
 
                     menu.omsg("已停止任务...");
                     
@@ -75,6 +86,8 @@ public class TaskManage extends NTBaseCmd {
                             new Thread(task).start();
 
                             while(!"stop".equals(input())) {}
+                            
+                            task.stop();
 
                             menu.omsg("已停止任务...");
                             

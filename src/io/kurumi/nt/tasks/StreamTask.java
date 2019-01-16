@@ -14,49 +14,51 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
     private Twitter api;
     private TwitterStream stream;
     private StreamSetting setting;
-    
+
     private long[] target;
-    
+
+    private ExecutorService exec = Executors.newSingleThreadExecutor();
+
     public StreamTask(TwiAccount account) {
 
         acc = account;
 
         api = acc.createApi();
-        
+
         stream = new TwitterStreamFactory(acc.createConfig()).getInstance().addListener(this);
-        
+
         setting = StreamSetting.get(acc);
-        
+
     }
-    
+
     public void run() {
-        
+
         if (!setting.isSendLikeEnable()
             && (setting.isSendLikeToFriends() || setting.isSendLikeToFollowers())) {
-            
+
             println(acc.getFormatedName() + ":" + "无启用的功能...");
-            
+
             return;
-            
+
         }
-        
+
         try {
-            
+
             if (setting.isSendLikeToFriends() || setting.isSendLikeToFollowers()) {
-                
-               target = NTApi.longMarge(NTApi.getAllFr(api),NTApi.getAllFo(api));
-                
-            } else if(setting.isSendLikeToFriends()) {
-                
+
+                target = NTApi.longMarge(NTApi.getAllFr(api), NTApi.getAllFo(api));
+
+            } else if (setting.isSendLikeToFriends()) {
+
                 target = NTApi.getAllFr(api);
-               
-                
+
+
             } else {
-                
+
                 target = NTApi.getAllFo(api);
-                
+
             }
-            
+
             stream.filter(new FilterQuery().follow(target));
 
         } catch (TwitterException e) {
@@ -77,33 +79,43 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
         }
 
     }
-    
-    Executor exec = Executors.newSingleThreadExecutor();
+
+    public AtomicBoolean stopped = new AtomicBoolean(false);
+
+    public void stop() {
+
+        stopped.set(true);
+
+        exec.shutdownNow();
+
+    }
+
+
 
     @Override
     public void onStatus(final Status status) {
-        
+
         if (status.getUser().getId() == acc.accountId) return;
-        
+
         if (status.isRetweet()) return;
-        
+
         exec.execute(new Runnable() {
 
                 @Override
                 public void run() {
-                    
+
                     doMain(status);
-                    
+
                 }
-                
+
             });
 
-       
+
 
     }
-    
+
     public void doMain(Status status) {
-        
+
         try {
 
             int sc = 0;
@@ -117,7 +129,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                 api.createFavorite(status.getId());
 
-                if(setting.isSnedLikeToAllContextEnable()) {
+                if (setting.isSnedLikeToAllContextEnable()) {
 
                     LinkedList<Status> list = NTApi.getContextStatus(api, status , target);
 
@@ -129,8 +141,8 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                         if (s.isFavorited()) continue;
 
-                        if (Arrays.binarySearch(target,status.getId()) == -1) continue;
-                        
+                        if (Arrays.binarySearch(target, status.getId()) == -1) continue;
+
                         api.createFavorite(s.getId());
 
                         sc ++;
@@ -150,11 +162,11 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
         } catch (TwitterException exc) {
 
             if (exc.getErrorCode() == 139) {}
-            
+
             if (exc.exceededRateLimitation()) {
 
                 exc.printStackTrace();
-                
+
                 println("「流任务」到达Api上限 正在等待 : " + exc.getRateLimitStatus().getSecondsUntilReset() + " 秒");
 
                 try {
@@ -162,15 +174,15 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 } catch (InterruptedException e) {}
 
                 doMain(status);
-                
+
                 return;
 
             }
 
-             exc.printStackTrace();
+            exc.printStackTrace();
 
         }
-        
+
     }
 
     public void repeatIfNeeded(Status status) {

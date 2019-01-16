@@ -3,6 +3,7 @@ package io.kurumi.nt;
 import twitter4j.*;
 import java.util.*;
 import java.lang.reflect.*;
+import cn.hutool.core.util.*;
 
 public class NTApi {
 
@@ -30,12 +31,13 @@ public class NTApi {
 
         }
         
-        long[] ret = new long[set.size()];
+ 
+     //   long[] ret = new long[set.size()];
        
-        System.arraycopy(set.toArray(),0,ret,0,set.size());
+   //     System.arraycopy(set.toArray(new Long[set.size()]),0,ret,0,set.size());
         
         
-        return ret;
+        return ArrayUtil.unWrap(set.toArray(new Long[set.size()]));
     }
 
     public static long[] getAllFr(Twitter api) throws TwitterException {
@@ -116,7 +118,7 @@ public class NTApi {
 
                 Status superStatus =  api.showStatus(top.getInReplyToStatusId());
 
-                if (target == null || Arrays.binarySearch(target, superStatus.getUser().getId()) != -1) {
+                if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                     top = superStatus;
 
@@ -126,7 +128,7 @@ public class NTApi {
 
                 Status superStatus = top.getQuotedStatus();
 
-                if (target == null || Arrays.binarySearch(target, superStatus.getUser().getId()) != -1) {
+                if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                     top = superStatus;
 
@@ -153,7 +155,7 @@ public class NTApi {
 
         for (Status ss : getReplies(api, s)) {
 
-            if (target == null || Arrays.binarySearch(target, (long)ss.getUser().getId()) != -1) {
+            if (target == null || ArrayUtil.contains(target,ss.getUser().getId())) {
 
                 list.addAll(loopReplies(api, ss, target));
 
