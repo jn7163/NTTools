@@ -90,10 +90,12 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
     }
 
-
+    public AtomicBoolean rate = new AtomicBoolean(false);
 
     @Override
     public void onStatus(final Status status) {
+
+        if (stopped.get()) return;
 
         if (status.getUser().getId() == acc.accountId) return;
 
@@ -131,7 +133,19 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                 if (setting.isSnedLikeToAllContextEnable()) {
 
-                    LinkedHashSet<Status> list = NTApi.getContextStatus(api, status , target);
+                    LinkedHashSet<Status> list;
+
+                    if (rate.get()) {
+
+                        list = NTApi.getContextStatusWhenSearchRated(api, status, target);
+
+                    } else {
+
+                        list = NTApi.getContextStatus(api, status , target);
+
+
+                    }
+
 
                     for (Status s : list) {
 
@@ -187,11 +201,15 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                 println("「流任务」到达Api上限 正在等待 : " + exc.getRateLimitStatus().getSecondsUntilReset() + " 秒");
 
+                rate.set(true);
+
+                doMain(status);
+
                 try {
                     Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset() * 1000);
                 } catch (InterruptedException e) {}
 
-                doMain(status);
+                rate.set(false);
 
                 return;
 

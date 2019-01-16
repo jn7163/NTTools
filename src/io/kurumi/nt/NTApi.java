@@ -107,7 +107,61 @@ public class NTApi {
         return all;
 
     }
+    
+    public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
+    
+        Status top = status;
 
+        LinkedHashSet<Status> all = new LinkedHashSet<>();
+
+        all.add(status);
+
+        try {
+
+            while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
+
+                if (top.getInReplyToStatusId() != -1) {
+
+
+
+                    Status superStatus =  api.showStatus(top.getInReplyToStatusId());
+
+
+
+                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+
+                        top = superStatus;
+
+                        all.add(superStatus);
+
+                    } else break;
+
+
+                } else {
+
+                    Status superStatus = top.getQuotedStatus();
+
+                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+
+                        top = superStatus;
+
+                        all.add(status);
+
+                    } else break;
+
+                }
+
+            }
+
+        } catch (TwitterException exc) {
+
+            // 有锁推推文
+
+        }
+        
+        return all;
+        
+}
     public static LinkedHashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
@@ -158,10 +212,6 @@ public class NTApi {
             // 有锁推推文
 
         }
-
-
-
-
 
         all.addAll(loopReplies(api, top, target));
 
