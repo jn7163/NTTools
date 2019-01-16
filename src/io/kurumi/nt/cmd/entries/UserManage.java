@@ -5,6 +5,8 @@ import io.kurumi.nt.cmd.*;
 import twitter4j.*;
 import twitter4j.auth.*;
 import java.util.*;
+import cn.hutool.http.*;
+import cn.hutool.core.util.*;
 
 public class UserManage extends NTBaseCmd {
 
@@ -18,14 +20,14 @@ public class UserManage extends NTBaseCmd {
             public void run() {
 
                 userManageMainMenu.clean();
-                
+
                 for (Map.Entry<Long,TwiAccount> acc : user.twiAccounts.entrySet()) {
 
                     NTMenu userManageMenu = userManageMainMenu.subMenu("管理账号 : " + acc.getValue().getFormatedName());
                     buildManageMenu(user, userManageMenu, acc.getValue());
 
                 }
-                
+
                 userManageMainMenu.item(new NTMenu.Item("添加账号") {
 
                         @Override
@@ -117,11 +119,11 @@ public class UserManage extends NTBaseCmd {
                         }
 
                     });
-                    
+
             };
-            
+
         };
-        
+
     }
 
 
@@ -217,9 +219,10 @@ public class UserManage extends NTBaseCmd {
 
         if (!acc.refresh()) {
 
-            clear();
-            printSplitLine();
+
             println("网络错误或Token无效！");
+
+            if (confirm("是否重试？")) return addByInputToken(user);
 
             return null;
 
@@ -251,24 +254,52 @@ public class UserManage extends NTBaseCmd {
             RequestToken req = api.getOAuthRequestToken();
 
             println("请认证后输入跳转到的地址 (本地Url) :");
-            println("author :" + req.getAuthorizationURL());
-            println("authen : " + req.getAuthenticationURL());
+            println(req.getAuthenticationURL());
 
-            return null;
+            String url = input("请输入Url : ");
+            HashMap<String, String> params = HttpUtil.decodeParamMap(StrUtil.subAfter(url, "?", true), "UTF-8");
+
+            String requestToken = params.get("oauth_token");
+            String oauthVerifier = params.get("oauth_verifier");
+
+            // println("verifier : " + oauthVerifier);
+
+            if (oauthVerifier == null) {
+
+                println("无效的url！");
+
+                if (confirm("是否重试？")) {
+
+                    return addByBrowserOAuth(user);
+
+                }
+
+                return null;
+
+            }
+
+            AccessToken accToken = api.getOAuthAccessToken(req, oauthVerifier);
+
+            TwiAccount newAcc = new TwiAccount(user, token.apiToken, token.apiSecToken, accToken.getToken(), accToken.getTokenSecret());
+            newAcc.refresh();
+            println("认证成功 ！ 登录的账号 : " + newAcc.name + " (@" + newAcc.screenName + ")");
+
+            user.twiAccounts.put(newAcc.accountId, newAcc);
+            user.save();
+
+            return newAcc;
+
 
         } catch (TwitterException e) {
 
             if (e.isCausedByNetworkIssue()) {
 
-
                 println("网络连接失败..");
-                println();
-
-
 
             } else {
 
-                e.printStackTrace();
+                println("认证失败..");
+
             }
 
             if (confirm("要重试吗？")) {
