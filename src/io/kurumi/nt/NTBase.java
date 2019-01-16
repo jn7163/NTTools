@@ -44,7 +44,7 @@ public abstract class NTBase {
 
             try {
 
-                Class.forName("com.aide.ui.AIDEApplication");
+                Class.forName("android.os.Build");
 
                 return;
 

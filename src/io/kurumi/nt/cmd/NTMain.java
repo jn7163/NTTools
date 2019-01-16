@@ -32,7 +32,7 @@ public class NTMain extends NTBaseCmd {
 
             @Override
             public void run() {
-
+                
                 ApiManage.apply(user, menu);
                 UserManage.apply(user, menu);
                 TaskManage.apply(user,menu);
