@@ -165,7 +165,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
             }
 
-            if (exc.getErrorCode() != 139) {
+            if (exc.getErrorCode() == 139) {
 
                 println("「流任务」打心失败 : 已被限制");
 
@@ -175,7 +175,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 
                 println("「流任务」网络错误....");
                 
-            }
+            } else exc.printStackTrace();
 
         }
         
