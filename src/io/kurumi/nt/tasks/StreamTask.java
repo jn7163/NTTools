@@ -174,6 +174,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
             } else if (exc.isCausedByNetworkIssue()) {
                 
                 println("「流任务」网络错误....");
+                exc.printStackTrace();
                 
             } else exc.printStackTrace();
 
