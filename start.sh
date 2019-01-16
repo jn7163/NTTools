@@ -1,6 +1,6 @@
 export CLASSPATH=./classes
 
-for jar in ./libs/hutool//*.jar;do
+for jar in ./libs/hutool/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
