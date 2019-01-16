@@ -85,9 +85,9 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
     public void stop() {
 
         stopped.set(true);
-        
+
         stream.shutdown();
-       
+
         exec.shutdownNow();
 
     }
@@ -120,19 +120,42 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
     public void doMain(Status status) {
 
+        println();
+        println("「流任务 for " + acc.name + "」 收到信息 来自 " + status.getUser().getName() + " :");
+        println(status.getText());
+
+        sendLikeIfNeeded(status);
+        repeatIfNeeded(status);
+
+    }
+
+    public void sendLikeIfNeeded(Status status) {
+
         try {
 
             int sc = 0;
 
+
+
+
             if (setting.isSendLikeEnable()) {
+
+                if (status.getUser().getId() == acc.accountId) return;
+
+                if (status.isRetweet()) return;
 
                 if (status.isFavorited()) return;
 
-                sc ++;
+
+                LinkedHashSet<Status> list;
 
                 if (setting.isSnedLikeToAllContextEnable()) {
 
-                    LinkedHashSet<Status> list;
+
+
+
+
+
 
                     if (rate.get()) {
 
@@ -145,68 +168,70 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
                     }
 
-
-                    for (Status s : list) {
-
-                        if (s.getUser().getId() == acc.accountId) continue;
-
-                        if (s.isRetweet()) continue;
-
-                        if (s.isFavorited()) continue;
-
-                        if (Arrays.binarySearch(target, status.getId()) == -1) continue;
-
-                        try {
-
-                            api.createFavorite(s.getId());
-                            
-                            sc ++;
-                            
-                            try {
-                                Thread.sleep(233);
-                            } catch (InterruptedException e) {}
-                            
-                            
-                        } catch (TwitterException ex)  {
-
-                            if (ex.getErrorCode() == 139) {
-
-                                ex.printStackTrace();
-
-                            } else if(ex.getErrorCode() == 429) {
-                                
-                                try {
-                                    Thread.sleep(10000);
-                                } catch (InterruptedException e) {}
-                                
-                                
-                            }
-
-                        }
-
-                        
-
-                    }
-
                 } else {
 
-                    api.createFavorite(status.getId());
+                    list = new LinkedHashSet<>();
+
+                    list.add(status);
 
                 }
 
+
+                for (Status s : list) {
+
+                    if (s.getUser().getId() == acc.accountId) continue;
+
+                    if (s.isRetweet()) continue;
+
+                    if (s.isFavorited()) continue;
+
+                    if (Arrays.binarySearch(target, status.getId()) == -1) continue;
+
+                    try {
+
+                        api.createFavorite(s.getId());
+
+                        sc ++;
+
+                        try {
+                            Thread.sleep(233);
+                        } catch (InterruptedException e) {}
+
+
+                    } catch (TwitterException ex)  {
+
+                        if (ex.getStatusCode() == 139) {
+
+                            ex.printStackTrace();
+
+                        }   if (ex.getStatusCode() == 429) {
+
+                            println("「流任务」 打心被限制");
+
+                            break;
+
+                        } 
+
+
+
+                    }
+
+
+
+                }
+
+
+
             }
 
-            println();
-            println("「流任务 for " + acc.name + "」 收到信息 来自 " + status.getUser().getName() + " :");
-            println(status.getText());
 
-            println("打心 x " + sc);
+            println("「流任务」 打心 x " + sc);
 
         } catch (final TwitterException exc) {
 
-            if (exc.getErrorCode() == 139) {
+            if (exc.getStatusCode() == 139) {
 
-                println("已经打心 请检查是否有其他运行的程序");
+                println("已经打心过 请检查是否有其他运行的打心程序");
 
             } else if (exc.exceededRateLimitation()) {
 
@@ -217,59 +242,89 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 rate.set(true);
 
                 doMain(status);
-                
+
                 new Thread(new Runnable() {
 
                         @Override
                         public void run() {
-                            
+
                             try {
                                 Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset() * 1000);
                             } catch (InterruptedException e) {}
 
                             rate.set(false);
-                            
+
                         }
-                        
+
                     }).start();
 
-                
+
 
                 return;
 
+            } else if (exc.getErrorCode() == 429 && exc.getRateLimitStatus() == null) {
+
+                println("「流任务」 打心被限制");
+
             }
-            
-            exc.printStackTrace();
+
+            // exc.printStackTrace();
 
         }
+
 
     }
 
     public void repeatIfNeeded(Status status) {
 
-        Status superStatus =  status.getQuotedStatus();
-
-        if (superStatus == null || !superStatus.getText().equals(status.getText())) return;
-
-        while (superStatus != null) {
-
-            if (superStatus.getUser().getId() == acc.accountId) return;
-            superStatus = superStatus.getQuotedStatus();
-        }
-
         try {
 
-            NTApi.reply(api, status, status.getText());
+            if (status.getUser().getId() == api.getId()) return;
 
-            println("已复读 : " + status.getText());
+            Status superStatus;
+
+            if (status.getInReplyToStatusId() != -1) {
+
+                superStatus = api.showStatus(status.getInReplyToStatusId());
+
+            } else {
+
+                superStatus = status.getQuotedStatus();
+
+            }
+
+            if (superStatus.getUser().getId() == api.getId()) return;
+
+            if (!status.getText().equals(superStatus.getText())) return;
+
+            while (superStatus.getInReplyToStatusId() != -1 || superStatus.getQuotedStatusId() != -1) {
+
+                if (superStatus.getUser().getId() == acc.accountId) return;
+                
+            }
+
+
+            try {
+
+                NTApi.reply(api, status, status.getText());
+
+                println("已复读 : " + status.getText());
+
+            } catch (TwitterException e) {
+
+                printSplitLine();
+                e.printStackTrace();
+                printSplitLine();
+
+            }
+
 
         } catch (TwitterException e) {
 
-            printSplitLine();
-            e.printStackTrace();
-            printSplitLine();
+            return;
 
         }
+
 
     }
 

@@ -7,8 +7,6 @@ import cn.hutool.core.util.*;
 
 public class NTApi {
 
-
-
     public static String formatUsernName(User u) {
 
         return "[ " + u.getName() + "] (@" + u.getScreenName() + ")";
@@ -107,9 +105,9 @@ public class NTApi {
         return all;
 
     }
-    
+
     public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
-    
+
         Status top = status;
 
         LinkedHashSet<Status> all = new LinkedHashSet<>();
@@ -158,10 +156,10 @@ public class NTApi {
             // 有锁推推文
 
         }
-        
+
         return all;
-        
-}
+
+    }
     public static LinkedHashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
@@ -301,23 +299,32 @@ public class NTApi {
 
     public static void reply(Twitter api, Status status, String contnent) throws TwitterException {
 
-        if (status.getQuotedStatusId() == -1) {
+        if (status.getQuotedStatusId() == -1 && status.getInReplyToStatusId() == -1) {
 
             api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
 
-        }
-
-        StringBuilder replyBuilder = new StringBuilder("@" + status.getUser().getScreenName() + " ");
-
-        Status superStatus = status.getQuotedStatus();
-
-        while (superStatus != null) {
-
-            replyBuilder.append("@" + superStatus.getUser().getScreenName() + " ");
+            return;
 
         }
 
-        api.updateStatus(new StatusUpdate(replyBuilder.append(contnent).toString()).inReplyToStatusId(status.getId()));
+
+
+
+        String reply = "@" + status.getUser().getScreenName() + " ";
+
+        Status superStatus = status;
+
+        while (superStatus.getQuotedStatusId() != -1) {
+
+            superStatus = superStatus.getQuotedStatus();
+
+            reply = "@" + superStatus.getUser().getScreenName() + "" + reply;
+
+        }
+
+        reply = reply + contnent;
+
+        api.updateStatus(new StatusUpdate(reply).inReplyToStatusId(status.getId()));
 
     }
 

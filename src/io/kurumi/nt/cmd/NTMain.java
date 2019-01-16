@@ -38,6 +38,8 @@ public class NTMain extends NTBaseCmd {
                 TaskManage.apply(user,menu);
                 BackUpManage.apply(user,menu);
                 
+             //   Test.apply(user,menu);
+                
             }
 
         };
