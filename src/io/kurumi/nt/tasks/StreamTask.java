@@ -149,6 +149,8 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
         } catch (TwitterException exc) {
 
+            if (exc.getErrorCode() == 139) {}
+            
             if (exc.exceededRateLimitation()) {
 
                 exc.printStackTrace();
@@ -165,18 +167,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
             }
 
-            if (exc.getErrorCode() == 139) {
-
-                println("「流任务」打心失败 : 已被限制");
-
-                return;
-                
-            } else if (exc.isCausedByNetworkIssue()) {
-                
-                println("「流任务」网络错误....");
-                exc.printStackTrace();
-                
-            } else exc.printStackTrace();
+             exc.printStackTrace();
 
         }
         

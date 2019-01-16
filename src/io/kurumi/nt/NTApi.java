@@ -16,12 +16,25 @@ public class NTApi {
 
     public static long[] longMarge(long[] a, long[] b) {
 
-        long[] ret = new long[a.length + b.length];
+        LinkedHashSet<Long> set = new LinkedHashSet<>();
+        
+        for (long sa : a) {
+            
+            set.add(sa);
+            
+        }
+        
+        for (long sb : b) {
 
-        System.arraycopy(a, 0, ret, 0, a.length);
-        System.arraycopy(b, 0, ret, a.length - 1, b.length);
+            set.add(sb);
 
-
+        }
+        
+        long[] ret = new long[set.size()];
+       
+        System.arraycopy(set.toArray(),0,ret,0,set.size());
+        
+        
         return ret;
     }
 
