@@ -159,18 +159,32 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                         try {
 
                             api.createFavorite(s.getId());
+                            
+                            sc ++;
+                            
+                            try {
+                                Thread.sleep(233);
+                            } catch (InterruptedException e) {}
+                            
+                            
+                        } catch (TwitterException ex)  {
 
-                        } catch (TwitterException ex) {
-
-                            if (ex.getErrorCode() != 139) {
+                            if (ex.getErrorCode() == 139) {
 
                                 ex.printStackTrace();
 
+                            } else if(ex.getErrorCode() == 429) {
+                                
+                                try {
+                                    Thread.sleep(10000);
+                                } catch (InterruptedException e) {}
+                                
+                                
                             }
 
                         }
 
-                        sc ++;
+                        
 
                     }
 
@@ -188,7 +202,7 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
 
             println("打心 x " + sc);
 
-        } catch (TwitterException exc) {
+        } catch (final TwitterException exc) {
 
             if (exc.getErrorCode() == 139) {
 
@@ -203,17 +217,28 @@ public class StreamTask extends NTBase implements StatusListener,Runnable {
                 rate.set(true);
 
                 doMain(status);
+                
+                new Thread(new Runnable() {
 
-                try {
-                    Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset() * 1000);
-                } catch (InterruptedException e) {}
+                        @Override
+                        public void run() {
+                            
+                            try {
+                                Thread.sleep(exc.getRateLimitStatus().getSecondsUntilReset() * 1000);
+                            } catch (InterruptedException e) {}
 
-                rate.set(false);
+                            rate.set(false);
+                            
+                        }
+                        
+                    }).start();
+
+                
 
                 return;
 
             }
-
+            
             exc.printStackTrace();
 
         }
