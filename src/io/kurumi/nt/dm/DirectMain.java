@@ -84,9 +84,16 @@ public class DirectMain extends NTBaseCmd implements Runnable,UserStreamListener
     @Override
     public void onDirectMessage(DirectMessage directMessage) {
         
+        println("from : " + NTApi.formatUsernName(directMessage.getSender()));
+        println(directMessage.getText());
+        
         try {
             api.sendDirectMessage(directMessage.getSenderId(), "hello！");
-        } catch (TwitterException e) {}
+        } catch (TwitterException e) {
+            
+            e.printStackTrace();
+            
+        }
 
     }
 
