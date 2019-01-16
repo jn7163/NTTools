@@ -27,6 +27,8 @@ public class BackUpManage extends NTBaseCmd {
 
                             println(Base64.encode(user.getConfigObject().toString()));
 
+                            pause();
+                            
                             return false;
 
                         }

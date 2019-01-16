@@ -3,6 +3,7 @@ package io.kurumi.nt.cmd;
 import io.kurumi.nt.*;
 import io.kurumi.nt.cmd.entries.*;
 import java.io.*;
+import io.kurumi.nt.dm.*;
 
 public class NTMain extends NTBaseCmd {
 
@@ -37,6 +38,8 @@ public class NTMain extends NTBaseCmd {
                 UserManage.apply(user, menu);
                 TaskManage.apply(user,menu);
                 BackUpManage.apply(user,menu);
+                
+                DirectMain.apply(user,menu);
                 
              //   Test.apply(user,menu);
                 
