@@ -21,6 +21,8 @@ public class DirectMain extends NTBaseCmd implements Runnable,UserStreamListener
 
         stream = new TwitterStreamFactory(acc.createConfig()).getInstance().addListener(this);
 
+      
+        
     }
     
     public static void apply(final NTUser user,NTMenu menu) {
@@ -48,7 +50,9 @@ public class DirectMain extends NTBaseCmd implements Runnable,UserStreamListener
     
     @Override
     public void run() {
+        
         stream.user();
+        
     }
 
     @Override
