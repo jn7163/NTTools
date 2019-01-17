@@ -5,6 +5,7 @@ import twitter4j.*;
 import java.lang.annotation.*;
 import io.kurumi.nt.cmd.*;
 import io.kurumi.nt.cmd.entries.*;
+import twitter4j.conf.*;
 
 public class DirectMain extends NTBaseCmd implements Runnable,UserStreamListener {
 
@@ -47,14 +48,7 @@ public class DirectMain extends NTBaseCmd implements Runnable,UserStreamListener
     
     @Override
     public void run() {
-        
-        
-        
-        try {
-            stream.filter(new FilterQuery().follow(api.getFollowersIDs(-1).getIDs()));
-        } catch (TwitterException e) {}
-
-        
+        stream.user();
     }
 
     @Override
