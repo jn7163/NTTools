@@ -52,7 +52,7 @@ public class BackUpManage extends NTBaseCmd {
                                     FileUtil.writeUtf8String(config, user.getConfigFile());
                                     user.refresh();
 
-                                    menu.omsg("配置还原成功！");
+                                    menu.msg("配置还原成功！");
 
                                     return true;
 
@@ -61,7 +61,7 @@ public class BackUpManage extends NTBaseCmd {
                             } catch (JSONException ex) {
 
                                 ex.printStackTrace();
-                                backupMenuMain.omsg("配置文本无效");
+                                backupMenuMain.msg("配置文本无效");
 
                             }
 

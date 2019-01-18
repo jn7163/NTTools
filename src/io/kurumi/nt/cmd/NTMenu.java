@@ -10,11 +10,10 @@ public class NTMenu extends NTBaseCmd {
     private LinkedList<Item> items = new LinkedList<>();
 
     public Runnable init;
-    public Runnable msg;
-    public Runnable omsg;
+    private Runnable msg;
 
     public NTMenu() {}
-    
+
     public NTMenu(boolean isTop) {
 
         this.isTop = isTop;
@@ -29,24 +28,9 @@ public class NTMenu extends NTBaseCmd {
             public void run() {
 
                 println(msg);
-
-            }
-
-        };
-
-    }
-
-    public void omsg(final String msg) {
-
-        this.omsg = new Runnable() {
-
-            @Override
-            public void run() {
-
-                println(msg);
                 printSplitLine();
 
-                NTMenu.this.omsg = null;
+                NTMenu.this.msg = null;
 
             }
 
@@ -75,24 +59,32 @@ public class NTMenu extends NTBaseCmd {
         NTMenu sub = new NTMenu(false);
 
         item(new SubMenuItem(name, sub));
-        
+
         return sub;
 
     }
-    
+
     public void start() {
-        
+
         printSplitLine();
-        
+
         print();
-        
+
     }
 
     public void print() {
 
         if (msg != null) {
 
+            printSplitLine();
             msg.run();
+
+        }
+
+        if (init != null) {
+
+            clean();
+            init.run();
 
         }
 
@@ -103,13 +95,6 @@ public class NTMenu extends NTBaseCmd {
         } else {
 
             println("[0] : 退出选择");
-
-        }
-
-        if (init != null) {
-
-            clean();
-            init.run();
 
         }
 
@@ -127,26 +112,16 @@ public class NTMenu extends NTBaseCmd {
 
         int choose = choose();
 
-        if (choose < 0 || choose > index) {
+        while (choose < 0 || choose > index) {
 
-            msg = new Runnable() {
+            println("输入格式不正确");
+            
+            choose = choose();
 
-                @Override
-                public void run() {
 
-                    noSuchChoose();
-                    printSplitLine();
-                    msg = null;
+        }
 
-                }
-
-            };
-
-            print();
-
-            return;
-
-        } else if (choose == 0) {
+        if (choose == 0) {
 
             if (isTop) {
 
@@ -161,7 +136,7 @@ public class NTMenu extends NTBaseCmd {
         } else {
 
             Item ci = items.get(choose - 1);
-            
+
             try {
 
                 if (!ci.run()) {
@@ -231,7 +206,7 @@ public class NTMenu extends NTBaseCmd {
 
             clear();
             printSplitLine();
-            
+
             subMenu.print();
 
             return false;

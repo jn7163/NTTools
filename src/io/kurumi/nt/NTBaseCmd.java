@@ -57,6 +57,40 @@ public abstract class NTBaseCmd extends NTBase {
         return session.next();
 
     }
+    
+    public static String inputLine(String msg) {
+
+        System.out.print(msg);
+
+        try {
+
+            return session.nextLine();
+
+        } catch (Exception exc) {
+
+            return "";
+
+        }
+
+    }
+    
+    
+    public static long inputLong(String msg) {
+
+        System.out.print(msg);
+
+        try {
+
+            return session.nextLong();
+
+        } catch (Exception exc) {
+
+            return -1L;
+
+        }
+        
+        }
+    
 
     public static int inputInt(String msg) {
 

@@ -24,11 +24,6 @@ public class TaskManage extends NTBaseCmd {
 
             });
 
-        
-
-
-
-
     }
 
 

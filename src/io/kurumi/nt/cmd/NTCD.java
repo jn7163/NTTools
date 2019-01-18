@@ -37,10 +37,6 @@ public class NTCD<R> extends FN<R> {
     @Override
     public R invoke() {
         
-        clear();
-        
-        printSplitLine();
-
         switch (items.size()) {
 
             case 0:return null;

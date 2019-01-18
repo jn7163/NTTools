@@ -21,7 +21,7 @@ public class ApiManage extends NTBaseCmd {
 
                             if (addApi(user) != null) {
                                 
-                                apiManageMainMenu.omsg("添加成功！");
+                                apiManageMainMenu.msg("添加成功！");
                                 
                             }
 
@@ -49,10 +49,12 @@ public class ApiManage extends NTBaseCmd {
 
     public static void buildApiManageMenu(final NTUser user, final NTMenu menu, final ApiToken token) {
 
-        menu.msg = new Runnable() {
+        menu.init = new Runnable() {
 
             @Override
             public void run() {
+                
+                printSplitLine();
 
                 println("管理Api : " + token.apiName);
 
@@ -63,74 +65,75 @@ public class ApiManage extends NTBaseCmd {
 
                 println();
 
+
+                menu.item(new NTMenu.Item("修改Api名称") {
+
+                        @Override
+                        public boolean run() {
+
+                            String newName = input("新ApiName");
+
+                            if (confirm()) {
+
+                                token.apiName = newName;
+                                user.save();
+
+                            }
+
+                            return false;
+
+
+                        }
+
+                    });
+
+                menu.item(new NTMenu.Item("修改ApiToken") {
+
+                        @Override
+                        public boolean run() {
+
+
+                            String newToken = input("新ApiToken");
+                            String newSecToken = input("新ApiSecToken");
+
+                            if (confirm()) {
+
+                                token.apiToken = newToken;
+                                token.apiSecToken = newSecToken;
+                                user.save();
+
+                            }
+
+                            return false;
+
+                        }
+
+                    });
+
+                menu.item(new NTMenu.Item("删除该Api (您将失去这个API 真的很久！)") {
+
+                        @Override
+                        public boolean run() {
+
+                            if (confirm()) {
+
+                                user.apiTokens.remove(token);
+                                user.save();
+
+                                menu.msg("删除成功！");
+
+                            }
+
+                            return true;
+
+                        }
+
+                    });
+                    
             }
-
         };
-
-        menu.item(new NTMenu.Item("修改Api名称") {
-
-                @Override
-                public boolean run() {
-
-
-                    String newName = input("新ApiName");
-
-                    if (confirm()) {
-
-                        token.apiName = newName;
-                        user.save();
-
-                    }
-
-                    return false;
-
-
-                }
-
-            });
-
-        menu.item(new NTMenu.Item("修改ApiToken") {
-
-                @Override
-                public boolean run() {
-
-
-                    String newToken = input("新ApiToken");
-                    String newSecToken = input("新ApiSecToken");
-
-                    if (confirm()) {
-
-                        token.apiToken = newToken;
-                        token.apiSecToken = newSecToken;
-                        user.save();
-
-                    }
-
-                    return false;
-
-                }
-
-            });
-
-        menu.item(new NTMenu.Item("删除该Api (您将失去这个API 真的很久！)") {
-
-                @Override
-                public boolean run() {
-
-                    if (confirm()) {
-
-                        user.apiTokens.remove(token);
-                        user.save();
-
-                        menu.omsg("删除成功！");
-
-                    }
-
-                    return true;
-
-                }
-
-            });
+        
+        
 
     }
 

@@ -35,7 +35,7 @@ public class UserManage extends NTBaseCmd {
 
                             if (addUser(user) == null) {
 
-                                userManageMainMenu.omsg("添加失败...");
+                                userManageMainMenu.msg("添加失败...");
 
                             }
 
@@ -55,19 +55,12 @@ public class UserManage extends NTBaseCmd {
 
     public static void buildManageMenu(final NTUser user, final NTMenu menu, final TwiAccount acc) {
 
-        menu.msg = new Runnable() {
+        menu.init = new Runnable() {
 
             @Override
             public void run() {
 
-                println("管理账号 : ");
-                println();
-                println("用户ID : " + acc.accountId);
-                println("名称 : " + acc.name);
-                println("用户名 : " + acc.screenName);
-                //    println("邮箱 : " + acc.email);
-                println();
-
+                
 
             }
 
@@ -78,6 +71,16 @@ public class UserManage extends NTBaseCmd {
             @Override
             public void run() {
 
+                printSplitLine();
+                println("管理账号 : ");
+                println();
+                println("用户ID : " + acc.accountId);
+                println("名称 : " + acc.name);
+                println("用户名 : " + acc.screenName);
+                //    println("邮箱 : " + acc.email);
+                println();
+                
+                
                 menu.clean().item(new NTMenu.Item("刷新账号") {
 
                         @Override
@@ -85,11 +88,11 @@ public class UserManage extends NTBaseCmd {
 
                             if (!acc.refresh()) {
 
-                                menu.omsg("刷新失败！ 请检查网络或Token是否失效...");
+                                menu.msg("刷新失败！ 请检查网络或Token是否失效...");
 
                             } else {
 
-                                menu.omsg("刷新成功！");
+                                menu.msg("刷新成功！");
 
                             }
 
@@ -109,7 +112,7 @@ public class UserManage extends NTBaseCmd {
                                 user.twiAccounts.remove(acc);
                                 user.save();
 
-                                menu.omsg("删除账号成功！");
+                                menu.msg("删除账号成功！");
 
                                 return true;
 
