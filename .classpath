@@ -8,9 +8,9 @@
 <classpathentry kind="lib" path="libs/hutool/hutool-log-4.4.0.jar"/>
 <classpathentry kind="lib" path="libs/hutool/hutool-system-4.4.0.jar"/>
 <classpathentry kind="lib" path="libs/hutool/nio-classpath.jar"/>
-
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-async-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-core-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-stream-4.0.7.jar"/>
+<classpathentry kind="lib" path="libs/taip/taip-4.3.2.jar"/>
 
 </classpath>

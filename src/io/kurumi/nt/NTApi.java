@@ -275,8 +275,39 @@ public class NTApi {
 
 
     }
-
+    
     public static LinkedList<UserList> getLists(Twitter api) throws IllegalStateException, TwitterException {
+
+        LinkedList<UserList> list = new LinkedList<>();
+    
+        ResponseList<UserList> ownlists = api.getUserLists(api.getId());
+        list.addAll(ownlists);
+        
+        return list;
+        
+        }
+        
+        
+    public static LinkedList<UserList> getSubLists(Twitter api) throws IllegalStateException, TwitterException {
+
+        LinkedList<UserList> list = new LinkedList<>();
+
+        PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(), -1);
+        list.addAll(sublist);
+
+        if (sublist.hasNext()) {
+
+            sublist  = api.getUserListSubscriptions(api.getId(), sublist.getNextCursor());
+            list.addAll(sublist);
+
+        }
+
+        return list;
+
+    }
+    
+
+    public static LinkedList<UserList> getAllLists(Twitter api) throws IllegalStateException, TwitterException {
 
         LinkedList<UserList> list = new LinkedList<>();
 
@@ -297,13 +328,13 @@ public class NTApi {
 
     }
 
-    public static void reply(Twitter api, Status status, String contnent) throws TwitterException {
+    public static Status reply(Twitter api, Status status, String contnent) throws TwitterException {
 
         if (status.getQuotedStatusId() == -1 && status.getInReplyToStatusId() == -1) {
 
-            api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
+            return api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
 
-            return;
+          
 
         }
 
@@ -318,13 +349,17 @@ public class NTApi {
 
             superStatus = superStatus.getQuotedStatus();
 
+            if (!reply.contains(superStatus.getUser().getScreenName())) {
+            
             reply = "@" + superStatus.getUser().getScreenName() + "" + reply;
 
+            }
+                
         }
 
         reply = reply + contnent;
 
-        api.updateStatus(new StatusUpdate(reply).inReplyToStatusId(status.getId()));
+        return api.updateStatus(new StatusUpdate(reply).inReplyToStatusId(status.getId()));
 
     }
 

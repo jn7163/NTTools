@@ -90,7 +90,7 @@ public class TwiAccount {
             .setOAuthConsumerSecret(apiSecToken)
             .setOAuthAccessToken(accToken)
             .setOAuthAccessTokenSecret(accSecToken)
-            .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
+       //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
             .build();
 
     }

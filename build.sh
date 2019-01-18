@@ -6,7 +6,7 @@ for jar in ./libs/twitter4j/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-for jar in ./libs/twiapi/*.jar;do
+for jar in ./libs/taip/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
