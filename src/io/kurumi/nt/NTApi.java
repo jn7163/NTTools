@@ -9,7 +9,7 @@ public class NTApi {
 
     public static String formatUsernName(User u) {
 
-        return "「 " + u.getName() + "」 (@" + u.getScreenName() + ")";
+        return "「 " + u.getName() + "」 (" + u.getScreenName() + ")";
 
     }
 

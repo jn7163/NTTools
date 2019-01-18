@@ -82,22 +82,23 @@ public class Test extends NTBaseCmd {
 
                                     index ++;
 
-                                    if (index > 4) {
+                               //     if (index > 4) {
                                         s = NTApi.reply(tai, s, sc.toString());
 
                                         sc = new StringBuilder();
 
                                         index = 0;
-                                    }
+                               //     }
 
-                                    println(u.getScreenName() + " successed");
+                                    println(index + "." + u.getScreenName() + " successed");
 
 
 
 
                                 } catch (Exception e ) {
 
-                                    continue; }
+                                    e.printStackTrace();
+                                    }
 
 
                             }
@@ -117,11 +118,13 @@ public class Test extends NTBaseCmd {
 
         println("正在分析 : " + target);
 
-        ResponseList<Status> tl = api.getUserTimeline(target, new Paging().count(100));
+        ResponseList<Status> tl = api.getUserTimeline(target, new Paging().count(200));
 
         float count = 0;
         float polar = 0;
 
+        
+        
         for (Status s : tl) {
 
             if (!s.isRetweet()) {
