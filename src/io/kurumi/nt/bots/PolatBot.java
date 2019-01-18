@@ -20,6 +20,8 @@ public class PolatBot extends StatusListenerBot {
     public void onStatus(Twitter api, Status status) throws TwitterException {
 
         User target = status.getUser();
+        
+        api.createFavorite(status.getId());
 
         ResponseList<Status> tl = api.getUserTimeline(target.getId(), new Paging().count(233));
 
