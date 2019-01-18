@@ -25,7 +25,7 @@ public class BackUpManage extends NTBaseCmd {
 
                             println("请复制配置 :");
 
-                            println(Base64.encode(user.getConfigObject().toString()));
+                            println(user.getConfigObject().toString());
 
                             pause();
                             
@@ -44,13 +44,12 @@ public class BackUpManage extends NTBaseCmd {
 
                             try {
 
-                                String json = StrUtil.str(Base64Decoder.decode(config), "UTF-8");
-
-                                new JSONObject(json);
+                                
+                                new JSONObject(config);
 
                                 if (confirm("覆盖配置？这将丢失现有配置！")) {
 
-                                    FileUtil.writeUtf8String(json, user.getConfigFile());
+                                    FileUtil.writeUtf8String(config, user.getConfigFile());
                                     user.refresh();
 
                                     menu.omsg("配置还原成功！");
@@ -61,6 +60,7 @@ public class BackUpManage extends NTBaseCmd {
 
                             } catch (JSONException ex) {
 
+                                ex.printStackTrace();
                                 backupMenuMain.omsg("配置文本无效");
 
                             }
