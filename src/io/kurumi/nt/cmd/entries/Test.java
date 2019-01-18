@@ -93,7 +93,9 @@ public class Test extends NTBaseCmd {
                                     
                                 }
                                 
-                                } catch(Exception e ) { continue; }
+                                } catch(Exception e ) {
+                                    index --;
+                                    continue; }
 
 
                             }
