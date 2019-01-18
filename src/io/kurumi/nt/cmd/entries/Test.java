@@ -45,6 +45,8 @@ public class Test extends NTBaseCmd {
 
                             for (long id : ids.getIDs()) {
 
+                                try {
+                                
                                 index ++;
                                 
                                 float r = an(api, id);
@@ -90,6 +92,8 @@ public class Test extends NTBaseCmd {
                                     index = 0;
                                     
                                 }
+                                
+                                } catch(Exception e ) { continue; }
 
 
                             }
