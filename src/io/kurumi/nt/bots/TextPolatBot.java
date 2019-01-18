@@ -4,7 +4,7 @@ import twitter4j.*;
 import io.kurumi.nt.taip.*;
 import io.kurumi.nt.*;
 
-public class PolatBot extends StatusListenerBot {
+public class TextPolatBot extends StatusListenerBot {
 
     @Override
     public String getBotName() {

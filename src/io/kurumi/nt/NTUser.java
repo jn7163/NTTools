@@ -12,7 +12,7 @@ public class NTUser {
     public String userId;
 
     public LinkedList<ApiToken> apiTokens = new LinkedList<>();
-    public LinkedHashMap<Long,TwiAccount> twiAccounts = new LinkedHashMap<>();
+    public LinkedList<TwiAccount> twiAccounts = new LinkedList<>();
     public JSONObject userData = new JSONObject();
 
     public NTUser(NTContext context, String userId) {
@@ -53,7 +53,7 @@ public class NTUser {
             }
             for (Map.Entry<String,JSONObject> userObj : ((Map<String,JSONObject>)(Object)twiAccountMap).entrySet()) {
                 TwiAccount acc = new TwiAccount(this, userObj.getValue());
-                twiAccounts.put(acc.accountId, acc);
+                twiAccounts.add(acc);
             }
 
         } catch (IORuntimeException ex) {}
@@ -65,17 +65,17 @@ public class NTUser {
         JSONObject config = new JSONObject();
 
         JSONArray apiTokenList = new JSONArray();
-        JSONObject twiAccountMap = new JSONObject();
+        JSONArray twiAccountList = new JSONArray();
 
         for (ApiToken apiToken : apiTokens) {
             apiTokenList.add(apiToken.toJSONObject());
         }
-        for (Map.Entry<Long,TwiAccount> acc : twiAccounts.entrySet()) {
-            twiAccountMap.put(acc.getKey().toString(), acc.getValue().toJsonObject());
+        for (TwiAccount acc : twiAccounts) {
+            twiAccountList.add(acc.toJsonObject());
         }
 
         config.put("apiTokens", apiTokenList);
-        config.put("twiAccounts", twiAccountMap);
+        config.put("twiAccounts", twiAccountList);
         config.put("userData",userData);
 
         return config;

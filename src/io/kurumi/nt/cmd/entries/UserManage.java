@@ -21,10 +21,10 @@ public class UserManage extends NTBaseCmd {
 
                 userManageMainMenu.clean();
 
-                for (Map.Entry<Long,TwiAccount> acc : user.twiAccounts.entrySet()) {
+                for (TwiAccount acc : user.twiAccounts) {
 
-                    NTMenu userManageMenu = userManageMainMenu.subMenu("管理账号 : " + acc.getValue().getFormatedName());
-                    buildManageMenu(user, userManageMenu, acc.getValue());
+                    NTMenu userManageMenu = userManageMainMenu.subMenu("管理账号 : " + acc.getFormatedName());
+                    buildManageMenu(user, userManageMenu, acc);
 
                 }
 
@@ -134,9 +134,9 @@ public class UserManage extends NTBaseCmd {
 
         NTCD<TwiAccount> cd = new NTCD<TwiAccount>("账号");
 
-        for (Map.Entry<Long,TwiAccount> acc : user.twiAccounts.entrySet()) {
+        for (TwiAccount acc : user.twiAccounts) {
 
-            cd.add(acc.getValue().getFormatedName() , acc.getValue());
+            cd.add(acc.getFormatedName() , acc);
 
         }
 
@@ -231,7 +231,7 @@ public class UserManage extends NTBaseCmd {
 
         }
 
-        user.twiAccounts.put(acc.accountId, acc);
+        user.twiAccounts.add(acc);
         user.save();
 
         return acc;
@@ -287,7 +287,7 @@ public class UserManage extends NTBaseCmd {
             newAcc.refresh();
             println("认证成功 ！ 登录的账号 : " + newAcc.name + " (@" + newAcc.screenName + ")");
 
-            user.twiAccounts.put(newAcc.accountId, newAcc);
+            user.twiAccounts.add(newAcc);
             user.save();
 
             return newAcc;

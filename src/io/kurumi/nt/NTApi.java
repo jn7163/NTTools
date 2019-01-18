@@ -380,6 +380,16 @@ public class NTApi {
     
     public static String getContext(Status status) {
         
+        if (status.getInReplyToStatusId() != -1) {
+            
+            return StrUtil.subAfter(status.getText(),"@" + status.getInReplyToScreenName() + " ",false);
+            
+        } else if (status.getQuotedStatusId() != -1) {
+            
+            return status.getText();
+            
+        }
+        
         String text = status.getText();
         
         if (!text.contains("@")) return text;
