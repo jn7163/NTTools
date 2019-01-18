@@ -18,8 +18,8 @@ public class UserIdBot extends StatusListenerBot {
 
     @Override
     public void onStatus(Twitter api, Status status) throws TwitterException {
-
-        String text = StrUtil.subAfter(status.getText(),"@HiedaNaKan ",true);
+        
+        String text = NTApi.getContext(status);
         
         if (!text.contains("@")) {
 

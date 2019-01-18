@@ -377,5 +377,25 @@ public class NTApi {
         return api.updateStatus(new StatusUpdate(reply).inReplyToStatusId(status.getId()));
 
     }
+    
+    public static String getContext(Status status) {
+        
+        String text = status.getText();
+        
+        if (!text.contains("@")) return text;
+        
+        String sar = StrUtil.subAfter(text,"@",true);
+        
+        if (sar.contains(" ")) {
+            
+            return StrUtil.subAfter(sar," ",false);
+            
+        } else {
+            
+            return "@" + sar;
+            
+        }
+        
+    }
 
 }
