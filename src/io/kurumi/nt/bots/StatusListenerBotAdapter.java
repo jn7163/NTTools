@@ -20,17 +20,8 @@ public class StatusListenerBotAdapter extends TargetAdapter {
         statusId = bot.getStatusId(acc);
         
         
-        System.out.println(bot.getBotName() + "正在监听 : " + statusId);
+        System.out.println("「" + bot.getBotName() + "」"  + "正在监听 : " + statusId);
     }
-
-    @Override
-    public void onStatus(Status status) {
-        // TODO: Implement this method
-        super.onStatus(status);
-        
-        System.out.println(status);
-    }
-    
     
     
     @Override
@@ -38,13 +29,15 @@ public class StatusListenerBotAdapter extends TargetAdapter {
         
         if (status.getInReplyToStatusId() == statusId) {
             
+            System.out.println("「" + bot.getBotName() + "」" + "正在处理..");
+            
             try {
                 
                 bot.onStatus(api, status);
                 
             } catch (TwitterException e) {
                 
-                System.out.println("Bot出错 : " + e);
+                System.out.println("「" + bot.getBotName() + "」"  + "出错 : " + e);
                 
             }
 
