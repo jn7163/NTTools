@@ -19,11 +19,13 @@ public class UserIdBot extends StatusListenerBot {
     @Override
     public void onStatus(Twitter api, Status status) throws TwitterException {
 
-        if (!status.getText().contains("@")) {
+        String text = StrUtil.subAfter(status.getText(),"@HiedaNaKan ",true);
+        
+        if (!text.contains("@")) {
 
             try {
 
-                long targetId = Long.parseLong(status.getText());
+                long targetId = Long.parseLong(text);
 
                 try {
 
@@ -44,7 +46,7 @@ public class UserIdBot extends StatusListenerBot {
 
         } else {
 
-            String screenName = StrUtil.subAfter(status.getText(), "@", true);
+            String screenName = StrUtil.subAfter(text, "@", true);
 
             while (screenName.contains(" ")) {
 
