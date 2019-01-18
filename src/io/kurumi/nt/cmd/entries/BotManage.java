@@ -19,6 +19,7 @@ public class BotManage extends NTBaseCmd {
 
     static {
         
+        statusListenerBotList.add(new PolatBot());
         statusListenerBotList.add(new UserIdBot());
         
     }
