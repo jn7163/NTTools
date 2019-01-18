@@ -4,7 +4,7 @@ import io.kurumi.nt.twitter.*;
 import twitter4j.*;
 import io.kurumi.nt.*;
 
-public class StatusListenerBotAdapter extends TargetAdapter {
+public class StatusListenerBotAdapter extends StatusAdapter {
 
     private TwiAccount acc;
     private StatusListenerBot bot;
@@ -13,7 +13,6 @@ public class StatusListenerBotAdapter extends TargetAdapter {
     private long statusId;
 
     public StatusListenerBotAdapter(TwiAccount acc, StatusListenerBot bot) {
-        super(acc.accountId);
         this.acc = acc;
         this.bot = bot;
         api = acc.createApi();
@@ -25,7 +24,7 @@ public class StatusListenerBotAdapter extends TargetAdapter {
     
     
     @Override
-    public void onTargetStatus(Status status, long target, boolean reply) {
+    public void onStatus(Status status) {
         
         if (status.getInReplyToStatusId() == statusId) {
             
