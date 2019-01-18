@@ -71,11 +71,13 @@ public class Test extends NTBaseCmd {
 
                                 }
                                 
+                                sc.append("\n");
+                                
                                 sc.append(r);
                                 
                                 sc.append("%");
                                 
-                                sc.append("\n");
+                                sc.append("\n\n");
                                 
                                 if (index == 5) {
                                     
@@ -84,6 +86,8 @@ public class Test extends NTBaseCmd {
                                     sc = new StringBuilder();
                                     
                                     println(u.getScreenName() + " successed");
+                                   
+                                    index = 0;
                                     
                                 }
 
@@ -142,7 +146,11 @@ public class Test extends NTBaseCmd {
 
         }
 
-        return r * 100;
+        r =  r * 100;
+        
+        println(r + "%");
+        
+        return r;
 
     }
 
