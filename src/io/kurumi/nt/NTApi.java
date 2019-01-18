@@ -298,7 +298,7 @@ public class NTApi {
 
     public static LinkedList<UserList> getLists(Twitter api) throws IllegalStateException, TwitterException {
 
-      return new LinkedList<UserList>(api.getUserLists(api.getId(),true));
+        return new LinkedList<UserList>(api.getUserLists(api.getId(), true));
 
     }
 
@@ -343,13 +343,13 @@ public class NTApi {
 
     }
 
-    public static Status reply(Twitter api, Status status, String contnent) throws TwitterException {
 
+
+    public static Status reply(Twitter api, Status status, String contnent) throws TwitterException {
+        
         if (status.getQuotedStatusId() == -1 && status.getInReplyToStatusId() == -1) {
 
             return api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
-
-
 
         }
 

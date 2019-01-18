@@ -29,18 +29,18 @@ public class UserIdBot extends StatusListenerBot {
 
                     User target =  api.showUser(targetId);
 
-                    NTApi.reply(api, status, "目标用户 : \n" + NTApi.formatUsernName(target));
+                    NTApi.reply(api, status, "目标用户 : \n" + NTApi.formatUsernName(target),true);
 
                 } catch (TwitterException e) {
 
-                    NTApi.reply(api, status, "目标UserId 「" + targetId + "」 无法取得\n请检查Id...");
+                    NTApi.reply(api, status, "目标UserId 「" + targetId + "」 无法取得\n请检查Id...",true);
 
 
                 }
 
             } catch (Exception e) {}
 
-            NTApi.reply(api, status, "您的UserId : " + status.getUser().getId());
+            NTApi.reply(api, status, "您的UserId : " + status.getUser().getId(),true);
 
         } else {
 
@@ -56,11 +56,11 @@ public class UserIdBot extends StatusListenerBot {
 
                 User target =  api.showUser(screenName);
 
-                NTApi.reply(api, status, "目标 " + NTApi.formatUsernName(target) + " :\n" + "UserId为 : " + target.getId());
+                NTApi.reply(api, status, "目标 " + NTApi.formatUsernName(target) + " :\n" + "UserId为 : " + target.getId(),true);
 
             } catch (TwitterException e) {
 
-                NTApi.reply(api, status, "目标 「" + screenName + "」 无法取得\n请检查用户名...");
+                NTApi.reply(api, status, "目标 「" + screenName + "」 无法取得\n请检查用户名...",true);
 
             }
 

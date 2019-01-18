@@ -82,7 +82,7 @@ public class BotManage extends NTBaseCmd {
                                 
                             }
                             
-                            TwitterStream stream = builder.build().sample();
+                            TwitterStream stream = builder.build().filter(new FilterQuery().follow(new long[] { acc.accountId}));
                             
                             println("启动成功 输入 stop 停止");
                             
@@ -94,7 +94,9 @@ public class BotManage extends NTBaseCmd {
                             
                             return false;
                         }
+                        
                     });
+                    
                 
                 
             }

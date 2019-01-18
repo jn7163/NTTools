@@ -13,8 +13,6 @@ public class StatusListenerBotAdapter extends StatusAdapter {
 
     private long statusId;
 
-    private ExecutorService pool = Executors.newScheduledThreadPool(9);
-
     public StatusListenerBotAdapter(TwiAccount acc, StatusListenerBot bot) {
         this.acc = acc;
         this.bot = bot;
@@ -29,33 +27,24 @@ public class StatusListenerBotAdapter extends StatusAdapter {
     @Override
     public void onStatus(final Status status) {
 
-        pool.execute(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    if (status.getInReplyToStatusId() == statusId) {
-
-                        System.out.println("「" + bot.getBotName() + "」" + "正在处理..");
-
-                        try {
-
-                            bot.onStatus(api, status);
-
-                        } catch (TwitterException e) {
-
-                            System.out.println("「" + bot.getBotName() + "」"  + "出错 : " + e);
-
-                        }
 
 
+        if (status.getInReplyToStatusId() == statusId) {
 
-                    }
+            System.out.println("「" + bot.getBotName() + "」" + "正在处理..");
 
+            try {
 
-                }
+                bot.onStatus(api, status);
 
-            });
+            } catch (TwitterException e) {
+
+                System.out.println("「" + bot.getBotName() + "」"  + "出错 : ");
+                e.printStackTrace();
+
+            }
+
+        }
 
     }
 
