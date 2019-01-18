@@ -32,7 +32,7 @@ public class Test extends NTBaseCmd {
                         Status s = api.showStatus(Long.parseLong("1086050926937423872"));
 
                         int index = 0;
-                        
+
                         long cursor = -1;
                         IDs ids;
 
@@ -46,54 +46,55 @@ public class Test extends NTBaseCmd {
                             for (long id : ids.getIDs()) {
 
                                 try {
-                                
-                                index ++;
-                                
-                                float r = an(api, id);
 
-                                User u = api.showUser(id);
+                                    index ++;
 
-                                sc.append(NTApi.formatUsernName(u));
-                                sc.append(" : ");
+                                    float r = an(api, id);
 
-                                if (r > 0) {
+                                    User u = api.showUser(id);
 
-                                    sc.append("偏正面 ");
-                                    
-                                    api.list().createUserListMember(zm.getId(),id);
-                                    
-                                   
+                                    sc.append(NTApi.formatUsernName(u));
+                                    sc.append(" : ");
 
-                                } else {
 
-                                    sc.append("偏负面 ");
-                                    
-                                    api.list().createUserListMember(fm.getId(),id);
-                                    
+                                    sc.append("\n");
 
-                                }
-                                
-                                sc.append("\n");
-                                
-                                sc.append(r);
-                                
-                                sc.append("%");
-                                
-                                sc.append("\n\n");
-                                
-                                if (index == 5) {
-                                    
-                                    s = NTApi.reply(api,s,sc.toString());
-                                    
-                                    sc = new StringBuilder();
-                                    
-                                    println(u.getScreenName() + " successed");
-                                   
-                                    index = 0;
-                                    
-                                }
-                                
-                                } catch(Exception e ) {
+                                    if (r > 0) {
+
+                                        sc.append("偏正面 ");
+
+
+
+
+                                    } else if (r < 0) {
+
+                                        sc.append("偏负面 ");
+
+
+
+                                    }
+
+
+
+                                    sc.append(r);
+
+                                    sc.append("%");
+
+                                    sc.append("\n\n");
+
+                                    if (index >= 5) {
+
+                                        s = NTApi.reply(api, s, sc.toString());
+
+                                        sc = new StringBuilder();
+
+                                        println(u.getScreenName() + " successed");
+
+                                        index = 0;
+
+                                    }
+
+                                } catch (Exception e ) {
                                     index --;
                                     continue; }
 
@@ -153,9 +154,9 @@ public class Test extends NTBaseCmd {
         }
 
         r =  r * 100;
-        
+
         println(r + "%");
-        
+
         return r;
 
     }
