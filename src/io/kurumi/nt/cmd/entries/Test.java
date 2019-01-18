@@ -26,9 +26,7 @@ public class Test extends NTBaseCmd {
                         Twitter api =  acc.createApi();
 
 
-                        UserList zm = UserListManage.chooseOwnUserList(acc);
-                        UserList fm = UserListManage.chooseOwnUserList(acc);
-
+                        
                         Status s = api.showStatus(Long.parseLong("1086050926937423872"));
 
                         int index = 0;
