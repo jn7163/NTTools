@@ -36,7 +36,7 @@ public class Test extends NTBaseCmd {
 
                         do {
 
-                            ids = api.getFollowersIDs("HiedaNaKan", cursor);
+                            ids = api.getFriendsIDs(cursor);
                             cursor = ids.getNextCursor();
 
                             StringBuilder sc = new StringBuilder();
@@ -80,17 +80,16 @@ public class Test extends NTBaseCmd {
 
                                     sc.append("\n\n");
 
-                                    if (index >= 5) {
-
+                                    
                                         s = NTApi.reply(api, s, sc.toString());
 
                                         sc = new StringBuilder();
 
                                         println(u.getScreenName() + " successed");
 
-                                        index = 0;
+                                     
 
-                                    }
+                                    
 
                                 } catch (Exception e ) {
                                     index --;
