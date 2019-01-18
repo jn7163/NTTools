@@ -18,7 +18,20 @@ public class StatusListenerBotAdapter extends TargetAdapter {
         this.bot = bot;
         api = acc.createApi();
         statusId = bot.getStatusId(acc);
+        
+        
+        System.out.println(bot.getBotName() + "正在监听 : " + statusId);
     }
+
+    @Override
+    public void onStatus(Status status) {
+        // TODO: Implement this method
+        super.onStatus(status);
+        
+        System.out.println(status);
+    }
+    
+    
     
     @Override
     public void onTargetStatus(Status status, long target, boolean reply) {
