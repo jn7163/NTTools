@@ -67,7 +67,7 @@ public class PolatBot extends StatusListenerBot {
 
         }
 
-        NTApi.reply(api, status, "结果 : " + status.getUser().getName() + "\n" + r);
+        NTApi.reply(api, status, "结果 : " +  NTApi.formatUsernName(status.getUser()) + "\n" + r);
 
     }
 
