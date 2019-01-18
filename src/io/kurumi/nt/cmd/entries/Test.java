@@ -115,7 +115,7 @@ public class Test extends NTBaseCmd {
 
         println("正在分析 : " + target);
 
-        ResponseList<Status> tl = api.getUserTimeline(target, new Paging().count(666));
+        ResponseList<Status> tl = api.getUserTimeline(target, new Paging().count(100));
 
         float count = 0;
         float polar = 0;
