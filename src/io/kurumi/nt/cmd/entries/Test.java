@@ -22,11 +22,11 @@ public class Test extends NTBaseCmd {
                     try {
 
                         TwiAccount acc = UserManage.chooseAccount(user);
-
+                        TwiAccount tar = UserManage.chooseAccount(user);
                         Twitter api =  acc.createApi();
+                        Twitter tai = tar.createApi();
 
 
-                        
                         Status s = api.showStatus(Long.parseLong("1086050926937423872"));
 
                         int index = 0;
@@ -45,7 +45,7 @@ public class Test extends NTBaseCmd {
 
                                 try {
 
-                                    index ++;
+
 
                                     float r = an(api, id);
 
@@ -80,19 +80,23 @@ public class Test extends NTBaseCmd {
 
                                     sc.append("\n\n");
 
-                                    
-                                        s = NTApi.reply(api, s, sc.toString());
+                                    index ++;
+
+                                    if (index > 4) {
+                                        s = NTApi.reply(tai, s, sc.toString());
 
                                         sc = new StringBuilder();
 
-                                        println(u.getScreenName() + " successed");
+                                        index = 0;
+                                    }
 
-                                     
+                                    println(u.getScreenName() + " successed");
 
-                                    
+
+
 
                                 } catch (Exception e ) {
-                                    index --;
+
                                     continue; }
 
 
