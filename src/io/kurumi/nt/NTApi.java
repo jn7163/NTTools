@@ -13,6 +13,26 @@ public class NTApi {
 
     }
 
+    public static LinkedList<User> getListUsers(Twitter api, long id) throws TwitterException {
+
+
+        LinkedList<User> list = new LinkedList<>();
+        PagableResponseList<User> ppl;
+        long cursor = -1;
+
+        do {
+
+            ppl = api.getUserListMembers(id, cursor);
+            cursor = ppl.getNextCursor();
+
+            list.addAll(ppl);
+
+        } while(ppl.hasNext());
+
+        return list;
+
+    }
+
     public static long[] longMarge(long[] a, long[] b) {
 
         LinkedHashSet<Long> set = new LinkedHashSet<>();
@@ -275,19 +295,14 @@ public class NTApi {
 
 
     }
-    
+
     public static LinkedList<UserList> getLists(Twitter api) throws IllegalStateException, TwitterException {
 
-        LinkedList<UserList> list = new LinkedList<>();
-    
-        ResponseList<UserList> ownlists = api.getUserLists(api.getId());
-        list.addAll(ownlists);
-        
-        return list;
-        
-        }
-        
-        
+      return new LinkedList<UserList>(api.getUserLists(api.getId(),true));
+
+    }
+
+
     public static LinkedList<UserList> getSubLists(Twitter api) throws IllegalStateException, TwitterException {
 
         LinkedList<UserList> list = new LinkedList<>();
@@ -305,7 +320,7 @@ public class NTApi {
         return list;
 
     }
-    
+
 
     public static LinkedList<UserList> getAllLists(Twitter api) throws IllegalStateException, TwitterException {
 
@@ -334,7 +349,7 @@ public class NTApi {
 
             return api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
 
-          
+
 
         }
 
@@ -350,11 +365,11 @@ public class NTApi {
             superStatus = superStatus.getQuotedStatus();
 
             if (!reply.contains(superStatus.getUser().getScreenName())) {
-            
-            reply = "@" + superStatus.getUser().getScreenName() + "" + reply;
+
+                reply = "@" + superStatus.getUser().getScreenName() + "" + reply;
 
             }
-                
+
         }
 
         reply = reply + contnent;
