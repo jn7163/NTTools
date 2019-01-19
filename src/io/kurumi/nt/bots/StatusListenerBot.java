@@ -21,11 +21,11 @@ public abstract class StatusListenerBot {
         acc.save();
 
     }
-    
+
     public Adapter createAdapter(TwiAccount acc) {
-        
+
         return new Adapter(acc);
-        
+
     }
 
     public class Adapter extends StatusAdapter {
@@ -50,23 +50,46 @@ public abstract class StatusListenerBot {
 
             if (status.getInReplyToStatusId() == statusId) {
 
-                System.out.println("「" + getBotName() + "」" + "正在处理 : ");
-                System.out.println(NTApi.formatUsernName(status.getUser()) + " : " + status.getText());
+                process(status);
 
-                try {
+                return;
 
-                    StatusListenerBot.this.onStatus(api, status);
+            }
 
-                } catch (TwitterException e) {
+            try {
 
-                    System.out.println("「" + getBotName() + "」"  + "出错 : ");
-                    e.printStackTrace();
+                Status inrs =  api.showStatus(status.getInReplyToStatusId());
+                
+                if (inrs.isRetweet() && inrs.getRetweetedStatus().getId() == statusId) {
+
+                    process(status);
 
                 }
 
-                System.out.println("「" + getBotName() + "」 处理完成.");
+
+            } catch (TwitterException e) {}
+
+        }
+
+        private void process(Status status) {
+
+            System.out.println("「" + getBotName() + "」" + "正在处理 : ");
+            System.out.println(NTApi.formatUsernName(status.getUser()) + " : " + status.getText());
+
+            try {
+
+                StatusListenerBot.this.onStatus(api, status);
+
+            } catch (TwitterException e) {
+
+                System.out.println("「" + getBotName() + "」"  + "出错 : ");
+                e.printStackTrace();
 
             }
+
+            System.out.println("「" + getBotName() + "」 处理完成.");
+
+
 
         }
 
