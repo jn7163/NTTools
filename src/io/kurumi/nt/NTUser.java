@@ -43,7 +43,7 @@ public class NTUser {
 
             JSONObject config = new JSONObject(configJson);
             JSONArray apiTokenList = config.getJSONArray("apiTokens");
-            JSONObject twiAccountMap = config.getJSONObject("twiAccounts");
+            JSONArray twiAccountList = config.getJSONArray("twiAccounts");
             userData = config.getJSONObject("userData");
            
             apiTokens.clear();
@@ -51,8 +51,8 @@ public class NTUser {
             for (JSONObject tokenObj : ((List<JSONObject>)(Object)apiTokenList)) {
                 apiTokens.add(new ApiToken(tokenObj));
             }
-            for (Map.Entry<String,JSONObject> userObj : ((Map<String,JSONObject>)(Object)twiAccountMap).entrySet()) {
-                TwiAccount acc = new TwiAccount(this, userObj.getValue());
+            for (JSONObject userObj : ((List<JSONObject>)(Object)twiAccountList)) {
+                TwiAccount acc = new TwiAccount(this, userObj);
                 twiAccounts.add(acc);
             }
 
