@@ -28,6 +28,8 @@ public class TextPolatBot extends StatusListenerBot {
         int count = 0;
         float polar = 0;
 
+        boolean next = false;
+        
         for (Status s : tl) {
 
             if (s.isRetweet()) continue;
@@ -36,9 +38,18 @@ public class TextPolatBot extends StatusListenerBot {
 
                 float tp = AIUtil.nlpTextpolar(s.getText());
 
-                if (tp != 0) {
+                if (tp != 0 || next) {
+                    
+                    
                     polar += tp;
                     count ++;
+                    
+                    next = false;
+                    
+                } else {
+                    
+                    next = true;
+                    
                 }
 
             } catch (Exception e) {}
